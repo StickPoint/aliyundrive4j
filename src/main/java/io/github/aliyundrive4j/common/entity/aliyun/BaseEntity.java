@@ -1,4 +1,4 @@
-package io.github.aliyundrive4j.common.entity.base;
+package io.github.aliyundrive4j.common.entity.aliyun;
 
 /**
  * description: BaseEntity
@@ -9,7 +9,6 @@ package io.github.aliyundrive4j.common.entity.base;
  * @PackageName io.github.aliyundrive4j.common.entity
  */
 public abstract class BaseEntity {
-
 
 
 }
