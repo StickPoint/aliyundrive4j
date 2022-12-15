@@ -20,6 +20,6 @@ public class AliyunDriveHttpConfig implements Config {
     @Override
     public void with(Builder builder) {
         // 配置基本固定参数
-
+        builder.baseUrl("https://www.aliyundrive.com");
     }
 }

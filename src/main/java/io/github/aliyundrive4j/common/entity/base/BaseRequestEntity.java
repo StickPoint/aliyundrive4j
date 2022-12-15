@@ -1,4 +1,6 @@
 package io.github.aliyundrive4j.common.entity.base;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * description: BaseRequestEntity
@@ -8,6 +10,10 @@ package io.github.aliyundrive4j.common.entity.base;
  * @Author puye(0303)
  * @PackageName io.github.aliyundrive4j.common.entity
  */
-public abstract class BaseRequestEntity extends BaseEntity{
+public class BaseRequestEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -4420006432074106509L;
+
 
 }

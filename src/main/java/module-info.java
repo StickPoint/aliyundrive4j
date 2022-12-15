@@ -5,5 +5,4 @@ open module io.github.aliyundrive4j {
     requires okhttps;
     // 配置SPI机制下的HttpConfig封装
     provides com.ejlchina.okhttps.Config with io.github.aliyundrive4j.common.config.AliyunDriveHttpConfig;
-    exports io.github.aliyundrive4j.service;
 }
