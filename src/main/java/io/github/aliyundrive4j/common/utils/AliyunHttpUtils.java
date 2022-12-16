@@ -95,4 +95,35 @@ public class AliyunHttpUtils {
         return responseStr;
     }
 
+    /**
+     * 获取阿里云扫码登录的二维码
+     */
+    public String getQrCodeUrl(){
+        HttpResult httpResult = HTTP.async("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web")
+                .get().getResult();
+        String response = getResponse(httpResult);
+        // 打印一下
+        log.info(response);
+        return "base64";
+    }
+
+    /**
+     * 查询二维码状态
+     * @param t 阿里云盘扫码登录参数一 名称无实际意义，字段含义：时间戳
+     * @param ck 阿里云盘扫码登录参数二 名称无实际意义，字段含义：分布式加密子串
+     * @return 返回一个布尔值 包含两种状态 （1）false 失效状态；（2）true 有效状态。
+     */
+    public boolean queryQrCode(String t,String ck){
+        // 查询二维码状态
+        HttpResult httpResult = HTTP.async("https://passport.aliyundrive.com/newlogin/qrcode/query.do?appName=aliyun_drive")
+                .addBodyPara("t", t)
+                .addBodyPara("ck", ck)
+                .post().getResult();
+        // 获得请求结果
+        String response = getResponse(httpResult);
+        // 打印一下
+        log.info(response);
+        return false;
+    }
+
 }

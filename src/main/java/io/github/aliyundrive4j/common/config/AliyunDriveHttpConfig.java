@@ -3,6 +3,8 @@ package io.github.aliyundrive4j.common.config;
 import com.ejlchina.okhttps.Config;
 import com.ejlchina.okhttps.HTTP.Builder;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * description: AliyunDriveHttpConfig
  *
@@ -19,7 +21,9 @@ public class AliyunDriveHttpConfig implements Config {
      */
     @Override
     public void with(Builder builder) {
-        // 配置基本固定参数
-        builder.baseUrl("https://www.aliyundrive.com");
+        // 配置基本固定参数 全局请求五秒超时自动断开
+        builder.preprocTimeoutTimes(5)
+                // 配置全局请求字符编码 UTF-8
+                .charset(StandardCharsets.UTF_8);
     }
 }

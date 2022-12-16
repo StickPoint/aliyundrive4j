@@ -18,13 +18,18 @@
     <dependencies>
         <dependency>
             <groupId>com.ejlchina</groupId>
-            <artifactId>okhttps-jackson</artifactId>
+            <artifactId>okhttps-gson</artifactId>
             <version>${okhttp-version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

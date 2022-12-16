@@ -19,6 +19,8 @@ public interface IAliyunDriveUserService {
      */
     BaseResponseEntity loginWithQrcodeImage();
 
+
+
     /**
      * 账号密码登录
      * @return 返回用户的token等信息，此类型暂未进行封装处理
