@@ -1,7 +1,7 @@
 package io.github.aliyundrive4j;
+import io.github.aliyundrive4j.common.entity.aliyun.LoginQrcodeInfoEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
 import io.github.aliyundrive4j.common.utils.AliyunHttpUtils;
-import io.github.aliyundrive4j.service.IAliyunDriveFileService;
 import io.github.aliyundrive4j.service.IAliyunDriveUserService;
 import io.github.aliyundrive4j.service.impl.AliyunDriveUserServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @ClassName : HttpTest
  * @Date 2022/12/15 13:54
- * @Author puye(0303)
+ * @Author fntp
  * @PackageName io.github.aliyundrive4j
  */
 class HttpTest {
@@ -53,9 +53,10 @@ class HttpTest {
      */
     @Test
     void testGetAliyunDriveQrcodeImage() {
-        AliyunHttpUtils instance = AliyunHttpUtils.getInstance();
         log.info("测试获得阿里云盘扫码登录的二维码");
-        instance.getQrCodeUrl();
+        IAliyunDriveUserService userService = new AliyunDriveUserServiceImpl();
+        BaseResponseEntity<LoginQrcodeInfoEntity> loginQrcodeInfo = userService.getLoginQrcodeInfo();
+        log.info(loginQrcodeInfo.toString());
     }
 
     /**
@@ -63,8 +64,9 @@ class HttpTest {
      */
     @Test
     void testGetAliyunDriveQrcodeImageAvailable() {
-        AliyunHttpUtils instance = AliyunHttpUtils.getInstance();
         log.info("测试获得阿里云盘扫码登录的二维码是否过期");
-        instance.queryQrCode("1671160648246","108ed3e35a06baf68170cd40b5147182");
+        IAliyunDriveUserService userService = new AliyunDriveUserServiceImpl();
+        BaseResponseEntity<Boolean> booleanBaseResponseEntity = userService.checkLoginQrcodeStatus("1671180214207","1f46cd147f7256d3ea70ac42bdb1a220");
+        log.info(booleanBaseResponseEntity.toString());
     }
 }

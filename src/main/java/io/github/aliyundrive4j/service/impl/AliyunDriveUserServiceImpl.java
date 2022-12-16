@@ -1,7 +1,11 @@
 package io.github.aliyundrive4j.service.impl;
-
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import io.github.aliyundrive4j.common.entity.aliyun.LoginQrcodeInfoEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
+import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
 import io.github.aliyundrive4j.common.enums.AliyunDriveInfoEnums;
 import io.github.aliyundrive4j.common.utils.AliyunHttpUtils;
 import io.github.aliyundrive4j.common.utils.PropertyUtils;
@@ -37,15 +41,6 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
      */
     @Override
     public BaseResponseEntity loginWithQrcodeImage() {
-        return null;
-    }
-
-    /**
-     * 账号密码登录
-     * @return 返回用户的token等信息，此类型暂未进行封装处理
-     */
-    @Override
-    public BaseResponseEntity loginWithUserNameAndPassword() {
         return null;
     }
 
@@ -87,5 +82,63 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
     public BaseResponseEntity checkExist(BaseRequestEntity baseRequestEntity) {
 
         return null;
+    }
+
+    /**
+     * 校验当前二维码是否有效
+     * @param timestamp 时间戳
+     * @param ckCode    ck校验码
+     * @return 返回一个基础响应，内容是布尔值，有两种结果：（1）false  二维码仍旧有效； （2）true二维码已过期；
+     */
+    @Override
+    public BaseResponseEntity<Boolean> checkLoginQrcodeStatus(String timestamp, String ckCode) {
+        String requestJsonResult = HTTP_CLIENT.queryQrCode(timestamp, ckCode);
+        JsonElement resultElement = JsonParser.parseString(requestJsonResult);
+        if (resultElement.isJsonObject()) {
+            JsonObject resultJsonObject = resultElement.getAsJsonObject();
+            String qrCodeStatus = resultJsonObject.get(AliyunDriveInfoEnums. ALIYUN_DRIVE_RESP_JSON_KEY_CONTENT.getEnumsStringValue())
+                    .getAsJsonObject()
+                    .get(AliyunDriveInfoEnums.ALIYUN_DRIVE_RESP_JSON_KEY_DATA.getEnumsStringValue())
+                    .getAsJsonObject()
+                    .get(AliyunDriveInfoEnums. ALIYUN_DRIVE_RESP_JSON_KEY_QR_CODE_STATUS.getEnumsStringValue())
+                    .getAsString();
+            return BaseResponseEntity .success(AliyunDriveInfoEnums.ALIYUN_DRIVE_LOGIN_QR_CODE_STATUS_NEW .getEnumsStringValue().equals(qrCodeStatus));
+        }
+        // 相应结果不是JSON肯定是HTTP请求异常
+        return BaseResponseEntity.error(AliyunDriveCodeEnums.ERROR_HTTP);
+    }
+
+    /**
+     * 获得扫码登录的二维码信息
+     *
+     * @return 返回一个二维码信息，使用者需要使用的是content内容以及ckCode与timestamp时间戳数据。
+     */
+    @Override
+    public BaseResponseEntity<LoginQrcodeInfoEntity> getLoginQrcodeInfo() {
+        // 第一步获得请求响应的JSON字符串
+        String respJsonStr = HTTP_CLIENT.getQrCodeUrl();
+        // 第二步 解析JSON字符串
+        JsonElement respJson = JsonParser.parseString(respJsonStr);
+        LoginQrcodeInfoEntity loginQrcodeInfoEntity = new LoginQrcodeInfoEntity();
+        if (respJson.isJsonObject()) {
+            JsonObject respJsonObject = respJson.getAsJsonObject();
+            JsonElement dataJsonElement = respJsonObject.get(AliyunDriveInfoEnums.
+                    ALIYUN_DRIVE_RESP_JSON_KEY_CONTENT.getEnumsStringValue())
+                    .getAsJsonObject().get(AliyunDriveInfoEnums.
+                    ALIYUN_DRIVE_RESP_JSON_KEY_DATA.getEnumsStringValue());
+            if (dataJsonElement.isJsonObject()) {
+                JsonObject dataJsonObject = dataJsonElement.getAsJsonObject();
+                loginQrcodeInfoEntity.setTimestamp(dataJsonObject.get(AliyunDriveInfoEnums.
+                        ALIYUN_DRIVE_RESP_JSON_KEY_T.getEnumsStringValue()).getAsString());
+                loginQrcodeInfoEntity.setCodeContent(dataJsonObject.get(AliyunDriveInfoEnums.
+                        ALIYUN_DRIVE_RESP_JSON_KEY_CODE_CONTENT.getEnumsStringValue()).getAsString());
+                loginQrcodeInfoEntity.setCkCode(dataJsonObject.get(AliyunDriveInfoEnums.
+                        ALIYUN_DRIVE_RESP_JSON_KEY_CK.getEnumsStringValue()).getAsString());
+                loginQrcodeInfoEntity.setResultCode(dataJsonObject.get(AliyunDriveInfoEnums.
+                        ALIYUN_DRIVE_RESP_JSON_KEY_RESULT_CODE.getEnumsStringValue()).getAsInt());
+            }
+            return BaseResponseEntity.success(loginQrcodeInfoEntity);
+        }
+        return BaseResponseEntity.error(AliyunDriveCodeEnums.ERROR_HTTP);
     }
 }

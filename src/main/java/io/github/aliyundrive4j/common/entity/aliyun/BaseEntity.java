@@ -9,7 +9,7 @@ import java.util.Objects;
  * 基础对象
  * @ClassName : BaseEntity
  * @Date 2022/12/15 13:27
- * @Author puye(0303)
+ * @Author fntp
  * @PackageName io.github.aliyundrive4j.common.entity
  */
 public abstract class BaseEntity {
