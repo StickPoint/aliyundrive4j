@@ -80,11 +80,12 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
      * 检查账号是否存在
      *
      * @param baseRequestEntity 检查账号是否存在的请求对象，请求需要包含以下鸡哥参数
-     *                          { "app_id": "pJZInNHN2dZWk8qg", "phone_number": "151***111", "phone_region": "86" }
+     * { "app_id": "pJZInNHN2dZWk8qg", "phone_number": "151***111", "phone_region": "86" }
      * @return 返回一个检查账号是否存在的基础响应，响应示例：{ "is_exist": true }
      */
     @Override
     public BaseResponseEntity checkExist(BaseRequestEntity baseRequestEntity) {
+
         return null;
     }
 }
