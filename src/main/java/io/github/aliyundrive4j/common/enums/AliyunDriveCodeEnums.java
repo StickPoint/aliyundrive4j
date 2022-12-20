@@ -48,6 +48,7 @@ public enum AliyunDriveCodeEnums {
     EXCEPTION_SQL_SELECT(20701,"SQL操作异常"),
     // 204xx 特殊
     ERROR_AUTHENTICATION(20401, "没有权限"),
+    ERROR_IS_NOT_JSON(20017, "response结果不是json"),
     ;
     /**
      * 状态码

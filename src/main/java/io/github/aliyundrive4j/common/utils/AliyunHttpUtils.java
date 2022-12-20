@@ -1,8 +1,11 @@
 package io.github.aliyundrive4j.common.utils;
+import com.ejlchina.data.ListMap;
 import com.ejlchina.okhttps.HTTP;
 import com.ejlchina.okhttps.HttpCall;
 import com.ejlchina.okhttps.HttpResult;
 import com.ejlchina.okhttps.OkHttps;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import io.github.aliyundrive4j.common.enums.AliyunDriveInfoEnums;
 import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
 import io.github.aliyundrive4j.common.exception.AliyunDriveException;
@@ -16,7 +19,7 @@ import java.util.Objects;
  *
  * @ClassName : AliyunHttpUtils
  * @Date 2022/12/15 11:52
- * @Author puye(0303)
+ * @Author fntp
  * @PackageName io.github.aliyundrive4j.utils
  */
 public class AliyunHttpUtils {
@@ -45,7 +48,7 @@ public class AliyunHttpUtils {
     public static AliyunHttpUtils getInstance() {
         if (Objects.isNull(INSTANCE)) {
             synchronized (AliyunHttpUtils.class) {
-                log.info("初始化加载HttpIUtils工具类对象");
+                log.info(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_TEMPLATE_001.getEnumsStringValue());
                 INSTANCE = new AliyunHttpUtils();
             }
         }
@@ -97,33 +100,117 @@ public class AliyunHttpUtils {
 
     /**
      * 获取阿里云扫码登录的二维码
+     * 扫码登录-这是扫码登录的第一步
      */
     public String getQrCodeUrl(){
         HttpResult httpResult = HTTP.async("https://passport.aliyundrive.com/newlogin/qrcode/generate.do?appName=aliyun_drive&fromSite=52&appName=aliyun_drive&appEntrance=web")
                 .get().getResult();
-        String response = getResponse(httpResult);
-        // 打印一下
-        log.info(response);
-        return "base64";
+        return getResponse(httpResult);
     }
 
     /**
      * 查询二维码状态
+     * 扫码登录-这是扫码登录的第二步
      * @param t 阿里云盘扫码登录参数一 名称无实际意义，字段含义：时间戳
      * @param ck 阿里云盘扫码登录参数二 名称无实际意义，字段含义：分布式加密子串
      * @return 返回一个布尔值 包含两种状态 （1）false 失效状态；（2）true 有效状态。
      */
-    public boolean queryQrCode(String t,String ck){
+    public String queryQrCode(String t,String ck){
         // 查询二维码状态
         HttpResult httpResult = HTTP.async("https://passport.aliyundrive.com/newlogin/qrcode/query.do?appName=aliyun_drive")
                 .addBodyPara("t", t)
                 .addBodyPara("ck", ck)
                 .post().getResult();
         // 获得请求结果
-        String response = getResponse(httpResult);
-        // 打印一下
-        log.info(response);
-        return false;
+        return getResponse(httpResult);
+    }
+
+    /**
+     * getToken（1）第一步 先去获得Cookie
+     * 通过访问网页来获得Cookie
+     * @return 返回一个cookie
+     */
+    private StringBuilder getAliyunDriveCookie(String requestUrl) {
+        ListMap<String> headers = HTTP.async(requestUrl)
+                .addHeader("User-Agent",AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_USER_AGENT.getEnumsStringValue())
+                .addHeader("referer","https://aliyundrive.com/")
+                .get().getResult().allHeaders();
+        StringBuilder resultValue = new StringBuilder("");
+        headers.forEach((key,value)->{
+            if ("set-cookie".equals(key)){
+                resultValue.append(value).append(";");
+            }
+        });
+        return resultValue;
+    }
+
+    /**
+     * 先去获得requestCode请求码
+     * 通过轮训查询二维码状态我们已经能拿到用户扫码登录确认之后的pds登录信息了，但是想要访问网盘还是不够的，
+     * 还是需要借助已经获得信息再次继续请求网盘
+     * 先从扫码登录获取的accessToken中提取accessToken信息
+     * 然后通过访问登录页面与其他页面获得cookie信息
+     * 最后组装cookie然后请求获得token地址就可以拿到最后的token
+     * 期间需要获得clientId，requestCode，accessToken，组合Cookie信息等
+     * 操作略有繁琐，但是好在最后Token能够正常获取
+     * @param accessToken 传入一个accessToken
+     * @return 返回一个授权地址
+     */
+    private String getAliyunOriginalToken(String accessToken) {
+        // 要想完成登录，首先第一步 获取clientId
+        HttpResult clientIdResult = HTTP.async("https://aliyundrive.com/sign/in")
+                .addHeader("User-Agent", AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_USER_AGENT.getEnumsStringValue())
+                .addHeader("referer", "https://aliyundrive.com/").get().getResult();
+        String getClientIdResp = clientIdResult.getBody().toString();
+        int startIndex = getClientIdResp.indexOf("client_id:");
+        int endIndex = getClientIdResp.indexOf("redirect_uri");
+        String cacheString = getClientIdResp.substring(startIndex, endIndex);
+        // 得到clientId
+        String clientId = cacheString.replace("client_id: '", "")
+                .replace("',", "")
+                .replaceAll("\\s*","");
+        // 第二步 获得授权地址
+        String authUrl = "https://auth.aliyundrive.com/v2/oauth/authorize?client_id=" +clientId+
+                "&redirect_uri=https://www.aliyundrive.com/sign/callback&response_type=code&login_type=custom&state={\"origin\":\"https://aliyundrive.com\"}";
+        StringBuilder aliyunDriveCookie1 = getAliyunDriveCookie(authUrl);
+        StringBuilder aliyunDriveCookie2 = getAliyunDriveCookie("https://passport.aliyundrive.com/mini_login.htm?lang=zh_cn&appName=aliyun_drive");
+        // 第三步 获得最终cookie字符串
+        String finalCookieStr = aliyunDriveCookie1.append(aliyunDriveCookie2).toString();
+        HttpResult httpResult = HTTP.async("https://auth.aliyundrive.com/v2/oauth/token_login")
+                .bodyType("json")
+                .addBodyPara("token", accessToken)
+                .addHeader("accept", "application/json, text/plain, */*")
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_NAME_CONTENT_TYPE.getEnumsStringValue(),
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON.getEnumsStringValue())
+                .addHeader("cookie", finalCookieStr)
+                .post().getResult();
+        String respBody = httpResult.getBody().toString();
+        JsonElement jsonElement = JsonParser.parseString(respBody);
+        String codeStr;
+        if (jsonElement.isJsonObject()) {
+            String gotoUrlStr = jsonElement.getAsJsonObject().get("goto").getAsString();
+            log.info(gotoUrlStr);
+            int codeStartIndex = gotoUrlStr.indexOf("code=")+"code=".length();
+            int codeEndIndex = gotoUrlStr.indexOf("&domain_id");
+            codeStr = gotoUrlStr.substring(codeStartIndex, codeEndIndex).replaceAll("\\s*","");
+            log.info(codeStr);
+        }else {
+            // 不是JSON对象
+            throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
+        }
+        HttpResult finalResult = HTTP.async("https://api.aliyundrive.com/token/get")
+                .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_TYPE_JSON.getEnumsStringValue())
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_NAME_CONTENT_TYPE.getEnumsStringValue(),
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON.getEnumsStringValue())
+                .addHeader("accept", "*/*")
+                .addBodyPara("code", codeStr).post().getResult();
+        String respResult = finalResult.getBody().toString();
+        log.info(respResult);
+        return respResult;
+    }
+
+    public String getToken(String accessToken){
+        return getAliyunOriginalToken(accessToken);
     }
 
 }

@@ -1,5 +1,7 @@
 package io.github.aliyundrive4j.service;
 
+import io.github.aliyundrive4j.common.entity.aliyun.LoginQrcodeInfoEntity;
+import io.github.aliyundrive4j.common.entity.aliyun.PdsLoginResult;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
 
@@ -8,7 +10,7 @@ import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
  *
  * @ClassName : IAliyunDriveUserService
  * @Date 2022/12/15 15:50
- * @Author puye(0303)
+ * @Author fntp
  * @PackageName io.github.aliyundrive4j.service
  */
 public interface IAliyunDriveUserService {
@@ -19,13 +21,6 @@ public interface IAliyunDriveUserService {
      */
     BaseResponseEntity loginWithQrcodeImage();
 
-
-
-    /**
-     * 账号密码登录
-     * @return 返回用户的token等信息，此类型暂未进行封装处理
-     */
-    BaseResponseEntity loginWithUserNameAndPassword();
 
     /**
      * 刷新token
@@ -47,6 +42,31 @@ public interface IAliyunDriveUserService {
      *  { "app_id": "pJZInNHN2dZWk8qg", "phone_number": "151***111", "phone_region": "86" }
      * @return 返回一个检查账号是否存在的基础响应，响应示例：{ "is_exist": true }
      */
-    BaseResponseEntity checkExist(BaseRequestEntity baseRequestEntity);
+    BaseResponseEntity<Boolean> checkExist(BaseRequestEntity baseRequestEntity);
+
+    /**
+     * 扫码登录操作
+     * 校验当前二维码是否有效
+     * @param timestamp 时间戳
+     * @param ckCode ck校验码
+     * @return 返回一个基础响应，内容是布尔值，有两种结果：（1）false 二维码已过期；（2）true 二维码仍旧有效；
+     */
+    BaseResponseEntity<Boolean> checkLoginQrcodeStatus(String timestamp, String ckCode);
+
+    /**
+     * 扫码登录操作
+     * 获得扫码登录的二维码信息
+     * @return 返回一个二维码信息，使用者需要使用的是content内容以及ckCode与timestamp时间戳数据。
+     */
+    BaseResponseEntity<LoginQrcodeInfoEntity> getLoginQrcodeInfo();
+
+    /**
+     * 扫码登录操作
+     * 扫码登录之后执行的登录操作
+     * @param loginQrcodeInfoEntity 扫码登录成功之后返回的信息，实际上我们需要的是这个实体里面的信息
+     * @return 返回一个登录之后的 refreshToken
+     */
+    //BaseResponseEntity<PdsLoginResult> doLogin(LoginQrcodeInfoEntity loginQrcodeInfoEntity);
+    String doLogin(LoginQrcodeInfoEntity loginQrcodeInfoEntity);
 
 }
