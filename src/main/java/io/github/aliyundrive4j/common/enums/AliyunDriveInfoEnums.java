@@ -42,17 +42,42 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_RESP_JSON_KEY_QR_CODE_STATUS("qrCodeStatus"),
     /**
+     * 阿里云盘-参数请求类型-json
+     */
+    ALIYUN_DRIVE_REQUEST_TYPE_JSON("json"),
+    /**
      * 阿里云盘-系统响应-JSON对象-Key-data
      */
     ALIYUN_DRIVE_RESP_JSON_KEY_DATA("data"),
+    /**
+     * 阿里云盘-Http请求的header参数名称:contentType
+     */
+    ALIYUN_DRIVE_REQUEST_HEADER_NAME_CONTENT_TYPE("content-type"),
+    /**
+     * 阿里云盘-请求头代理-user-agent
+     */
+    ALIYUN_DRIVE_REQUEST_USER_AGENT("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36 Edg/90.0.818.66"),
+    /**
+     * 阿里云盘-Http请求的header参数值：json
+     */
+    ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON("application/json; charset=UTF-8"),
     /**
      * 阿里云盘-扫码登录-二维码状态-正常
      */
     ALIYUN_DRIVE_LOGIN_QR_CODE_STATUS_NEW("NEW"),
     /**
+     * 阿里云登录结果
+     */
+    ALIYUN_DRIVE_LOGIN_PDS_LOGIN_RESULT("pds_login_result"),
+    /**
      * 阿里云 扫码登录-二维码状态-已过期
      */
     ALIYUN_DRIVE_LOGIN_QR_CODE_STATUS_EXPIRED("qrCodeStatus"),
+
+    /**
+     * 阿里云Http请求日志信息-第001条日志模板
+     */
+    ALIYUN_DRIVE_INFO_TEMPLATE_001("初始化加载HttpIUtils工具类对象"),
     /**
      * 阿里云盘-HTTP请求-请求的content-type内容-json
      */
