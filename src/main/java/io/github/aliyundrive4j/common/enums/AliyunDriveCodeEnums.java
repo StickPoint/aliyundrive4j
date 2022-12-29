@@ -7,6 +7,12 @@ package io.github.aliyundrive4j.common.enums;
  * @since 2022/03/05
  */
 public enum AliyunDriveCodeEnums {
+    /**
+     * 请求正常
+     */
+    ALI_SUCCESS(200,"success"),
+    // 429 接口请求过于频繁
+    ALI_BLOCK(429,"so frequent for a while"),
     // 成功
     SUCCESS(20000, "success"),
     // 错误
@@ -49,6 +55,7 @@ public enum AliyunDriveCodeEnums {
     // 204xx 特殊
     ERROR_AUTHENTICATION(20401, "没有权限"),
     ERROR_IS_NOT_JSON(20017, "response结果不是json"),
+    ERROR_ACCESS_TOKEN_IS_NULL(20018,"accessToken为空")
     ;
     /**
      * 状态码

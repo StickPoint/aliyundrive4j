@@ -1,6 +1,7 @@
 package io.github.aliyundrive4j.service;
 
 import io.github.aliyundrive4j.common.entity.aliyun.LoginQrcodeInfoEntity;
+import io.github.aliyundrive4j.common.entity.aliyun.LoginResultEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.PdsLoginResult;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
@@ -28,7 +29,7 @@ public interface IAliyunDriveUserService {
      * {"grant_type": "refresh_token","app_id": "pJZInNHN2dZWk8qg","refresh_token": "c65bf6d104ac510885c0124d74c4a099"}
      * @return 返回一个刷新Token之后的基础响应
      */
-    BaseResponseEntity refreshUserToken(BaseRequestEntity baseRequestEntity);
+    BaseResponseEntity<LoginResultEntity> refreshUserToken(BaseRequestEntity baseRequestEntity);
 
     /**
      * 账户登出操作，不需要传递任何按参数
@@ -51,7 +52,7 @@ public interface IAliyunDriveUserService {
      * @param ckCode ck校验码
      * @return 返回一个基础响应，内容是布尔值，有两种结果：（1）false 二维码已过期；（2）true 二维码仍旧有效；
      */
-    BaseResponseEntity<Boolean> checkLoginQrcodeStatus(String timestamp, String ckCode);
+    BaseResponseEntity<LoginQrcodeInfoEntity> checkLoginQrcodeStatus(String timestamp, String ckCode);
 
     /**
      * 扫码登录操作
@@ -64,9 +65,15 @@ public interface IAliyunDriveUserService {
      * 扫码登录操作
      * 扫码登录之后执行的登录操作
      * @param loginQrcodeInfoEntity 扫码登录成功之后返回的信息，实际上我们需要的是这个实体里面的信息
+     * //String doLogin(LoginQrcodeInfoEntity loginQrcodeInfoEntity);
      * @return 返回一个登录之后的 refreshToken
      */
-    //BaseResponseEntity<PdsLoginResult> doLogin(LoginQrcodeInfoEntity loginQrcodeInfoEntity);
-    String doLogin(LoginQrcodeInfoEntity loginQrcodeInfoEntity);
+    BaseResponseEntity<PdsLoginResult> doLoginWithQrcode(LoginQrcodeInfoEntity loginQrcodeInfoEntity);
 
+    /**
+     * 真正的登录接口
+     * @param pdsLoginResult 传入一个网盘登录结果对象
+     * @return 返回一个网盘登录最终结果对象
+     */
+    BaseResponseEntity<LoginResultEntity> doLogin(PdsLoginResult pdsLoginResult);
 }

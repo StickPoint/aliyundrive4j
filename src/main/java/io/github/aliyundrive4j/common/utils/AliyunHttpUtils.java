@@ -4,6 +4,7 @@ import com.ejlchina.okhttps.HTTP;
 import com.ejlchina.okhttps.HttpCall;
 import com.ejlchina.okhttps.HttpResult;
 import com.ejlchina.okhttps.OkHttps;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.github.aliyundrive4j.common.enums.AliyunDriveInfoEnums;
@@ -11,8 +12,11 @@ import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
 import io.github.aliyundrive4j.common.exception.AliyunDriveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * description: AliyunHttpUtils
@@ -205,12 +209,86 @@ public class AliyunHttpUtils {
                 .addHeader("accept", "*/*")
                 .addBodyPara("code", codeStr).post().getResult();
         String respResult = finalResult.getBody().toString();
+        if (Objects.isNull(respResult)) {
+            throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_HTTP);
+        }
         log.info(respResult);
         return respResult;
     }
 
     public String getToken(String accessToken){
+        // 这是内部方法不允许直接调用，所以隐藏起来不对外暴露
         return getAliyunOriginalToken(accessToken);
     }
+
+    /**
+     * 刷新阿里云登录token
+     * @param refreshTokenStr 刷新token字符串
+     * @return 返回一个登录最终结果
+     */
+    public String refreshToken(String refreshTokenStr) {
+        Map<String,String> refreshTokenRequestParamMap = new LinkedHashMap<>();
+        refreshTokenRequestParamMap.put("grant_type","refresh_token");
+        refreshTokenRequestParamMap.put("refresh_token",refreshTokenStr);
+        HttpResult httpResult = HTTP.async("https://auth.aliyundrive.com/v2/account/token").addBodyPara(refreshTokenRequestParamMap).bodyType("json").post().getResult();
+        if (AliyunDriveCodeEnums.ALI_SUCCESS.getCode()==httpResult.getStatus()){
+            // 请求成功
+            return httpResult.getBody().toString();
+        }
+        return null;
+    }
+
+    /**
+     * 阿里云盘交互请求
+     * @param requestUrl 传入一个请求地址
+     * @param postBodyParam 传入一个请求体参数
+     * @param token 传入一个token
+     * @return 返回一个请求结果
+     */
+    public String doPost(String requestUrl,Map<String,String> postBodyParam,String token) {
+        AtomicInteger errorCounter = new AtomicInteger(1);
+        try {
+            HttpResult httpResult = HTTP.async(requestUrl)
+                    .addBodyPara(postBodyParam)
+                    .addHeader("authorization", token)
+                    .addHeader("Content-Type", "application/json")
+                    .post().getResult();
+            if (AliyunDriveCodeEnums.ALI_BLOCK.getCode() == httpResult.getStatus()){
+                log.warn(AliyunDriveCodeEnums.ALI_BLOCK.getMessage());
+                Thread.sleep(5000);
+                return doPost(requestUrl,postBodyParam,token);
+            }else if (AliyunDriveCodeEnums.ALI_SUCCESS.getCode()==httpResult.getStatus()) {
+                return httpResult.getBody().toString();
+            }
+        } catch (AliyunDriveException exception) {
+            if (errorCounter.get()>6){
+                return null;
+            }else {
+                return doPost(requestUrl,postBodyParam,token);
+            }
+        }catch (InterruptedException interruptedException) {
+            log.error(interruptedException.getCause().toString());
+            Thread.currentThread().interrupt();
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * 文件上传请求
+     * @param requestUrl 请求地址
+     * @param paramBody 请求参数
+     * @param token 请求所需要携带的token
+     * @return 返回一个文件上传之后的响应
+     */
+    public String doFileUploadPost(String requestUrl,Map<String,String> paramBody,String token) {
+        HttpResult httpResult = HTTP.async(requestUrl)
+                .bodyType("text")
+                .addBodyPara(paramBody)
+                .post().getResult();
+        return null;
+    }
+
+
 
 }

@@ -36,6 +36,8 @@ public class BaseRequestEntity implements Serializable {
     @SerializedName("url_expire_sec")
     private Integer urlExpireSec;
 
+    private String refreshToken;
+
     public String getOfficeThumbnailProcess() {
         return officeThumbnailProcess;
     }
@@ -95,5 +97,11 @@ public class BaseRequestEntity implements Serializable {
     public BaseRequestEntity() {
     }
 
+    public String getRefreshToken() {
+        return refreshToken;
+    }
 
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

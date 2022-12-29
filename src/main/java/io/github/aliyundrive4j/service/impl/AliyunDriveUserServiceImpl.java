@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import io.github.aliyundrive4j.common.entity.aliyun.LoginQrcodeInfoEntity;
+import io.github.aliyundrive4j.common.entity.aliyun.LoginResultEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.PdsLoginResult;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
@@ -67,9 +68,25 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
      * @return 返回一个刷新Token之后的基础响应
      */
     @Override
-    public BaseResponseEntity refreshUserToken(BaseRequestEntity baseRequestEntity) {
-
-        return null;
+    public BaseResponseEntity<LoginResultEntity> refreshUserToken(BaseRequestEntity baseRequestEntity) {
+        String refreshTokenJsonResp = HTTP_CLIENT.refreshToken(baseRequestEntity.getRefreshToken());
+        if (Objects.isNull(refreshTokenJsonResp)) {
+            // 请求失败
+            throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_HTTP);
+        }
+        // 请求成功
+        Gson gson = new Gson();
+        LoginResultEntity loginResultEntity;
+        try {
+            loginResultEntity = gson.fromJson(refreshTokenJsonResp, LoginResultEntity.class);
+        } catch (JsonSyntaxException e) {
+            log.error(e.getCause().toString());
+            throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_JSON_PARSER);
+        }
+        if (Objects.nonNull(loginResultEntity)) {
+            return BaseResponseEntity.success(loginResultEntity);
+        }
+        return BaseResponseEntity.error(AliyunDriveCodeEnums.ERROR_HTTP);
     }
 
     /**
@@ -106,7 +123,7 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
      * @return 返回一个基础响应，内容是布尔值，有两种结果：（1）false  二维码仍旧有效； （2）true二维码已过期；
      */
     @Override
-    public BaseResponseEntity<Boolean> checkLoginQrcodeStatus(String timestamp, String ckCode) {
+    public BaseResponseEntity<LoginQrcodeInfoEntity> checkLoginQrcodeStatus(String timestamp, String ckCode) {
         String requestJsonResult = HTTP_CLIENT.queryQrCode(timestamp, ckCode);
         log.info(requestJsonResult);
         JsonElement resultElement = JsonParser.parseString(requestJsonResult);
@@ -116,8 +133,8 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
                     .getAsJsonObject().get(AliyunDriveInfoEnums.ALIYUN_DRIVE_RESP_JSON_KEY_DATA.getEnumsStringValue()).
                     getAsJsonObject();
             LoginQrcodeInfoEntity loginQrcodeInfoEntity = gson.fromJson(object.toString(), LoginQrcodeInfoEntity.class);
-            return BaseResponseEntity
-                    .success(AliyunDriveInfoEnums.ALIYUN_DRIVE_LOGIN_QR_CODE_STATUS_NEW .getEnumsStringValue().equals(loginQrcodeInfoEntity.getQrCodeStatus()));
+            //return BaseResponseEntity.success(AliyunDriveInfoEnums.ALIYUN_DRIVE_LOGIN_QR_CODE_STATUS_NEW .getEnumsStringValue().equals(loginQrcodeInfoEntity.getQrCodeStatus()));
+            return BaseResponseEntity.success(loginQrcodeInfoEntity);
         }
         // 相应结果不是JSON肯定是HTTP请求异常
         return BaseResponseEntity.error(AliyunDriveCodeEnums.ERROR_HTTP);
@@ -164,7 +181,7 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
      * @return 返回一个登录之后的 refreshToken
      */
     @Override
-    public String doLogin(LoginQrcodeInfoEntity loginQrcodeInfoEntity) {
+    public BaseResponseEntity<PdsLoginResult> doLoginWithQrcode(LoginQrcodeInfoEntity loginQrcodeInfoEntity) {
         if (Objects.isNull(loginQrcodeInfoEntity)) {
             // 如果传入的参数是空的
             throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_PARAM);
@@ -181,20 +198,39 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
                     ALIYUN_DRIVE_LOGIN_PDS_LOGIN_RESULT.getEnumsStringValue()).getAsJsonObject();
             // 开始解析
             Gson gson = new Gson();
-            // 映射完成
             try {
-                // 执行对象解析
+                // 映射完成 执行对象解析
                 PdsLoginResult pdsLoginResult = gson.fromJson(respJsonObject, PdsLoginResult.class);
                 if (Objects.nonNull(pdsLoginResult)) {
-                    log.info(pdsLoginResult.toString());
-                    return pdsLoginResult.getAccessToken();
+                    return BaseResponseEntity.success(pdsLoginResult);
                 }
             } catch (JsonSyntaxException e) {
                 throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_JSON_PARSER);
             }
         }
         // 响应给调用对象，这不是JSON对象
-        //return BaseResponseEntity.error(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
-        return null;
+        return BaseResponseEntity.error(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
+    }
+
+    /**
+     * 真正的登录接口
+     *
+     * @param pdsLoginResult 传入一个网盘登录结果对象
+     * @return 返回一个网盘登录最终结果对象
+     */
+    @Override
+    public BaseResponseEntity<LoginResultEntity> doLogin(PdsLoginResult pdsLoginResult) {
+        if (Objects.isNull(pdsLoginResult.getAccessToken())) {
+            // 如果accessToken是空的直接抛出异常
+            throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_ACCESS_TOKEN_IS_NULL);
+        }
+        // 返回最终登录的token
+        String resultJsonResp = HTTP_CLIENT.getToken(pdsLoginResult.getAccessToken());
+        Gson gson = new Gson();
+        LoginResultEntity finalLoginResult = gson.fromJson(resultJsonResp, LoginResultEntity.class);
+        if (Objects.nonNull(finalLoginResult)) {
+            return BaseResponseEntity.success(finalLoginResult);
+        }
+        return BaseResponseEntity.error(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
     }
 }
