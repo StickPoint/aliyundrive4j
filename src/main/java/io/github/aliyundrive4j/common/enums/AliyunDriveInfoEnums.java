@@ -10,6 +10,10 @@ package io.github.aliyundrive4j.common.enums;
  */
 public enum AliyunDriveInfoEnums {
     /**
+     * 阿里云盘-服务标题-文件搜索
+     */
+    ALIYUN_DRIVE_SERVER_FILE_SEARCH("【阿里云盘】文件搜索"),
+    /**
      * 阿里云盘-HTTP请求状态码-ok-200
      */
     ALIYUN_DRIVE_HTTP_STATUS_OK(200),
@@ -73,6 +77,10 @@ public enum AliyunDriveInfoEnums {
      * 阿里云 扫码登录-二维码状态-已过期
      */
     ALIYUN_DRIVE_LOGIN_QR_CODE_STATUS_EXPIRED("qrCodeStatus"),
+    /**
+     * 阿里云盘系统配置-token刷新-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_REFRESH_KEY("token_refresh"),
 
     /**
      * 阿里云Http请求日志信息-第001条日志模板

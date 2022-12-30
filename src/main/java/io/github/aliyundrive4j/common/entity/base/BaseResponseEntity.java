@@ -118,6 +118,14 @@ public class BaseResponseEntity<T> implements Serializable {
                 this.code = exceptionType.getCode();
                 this.message = String.format(exceptionType.getMessage(), params);
         }
+
+        /**
+         * 获得data
+         * @return 返回一个数据具体信息
+         */
+        public T getData(){
+                return this.data;
+        }
         
         /**
          * 错误
