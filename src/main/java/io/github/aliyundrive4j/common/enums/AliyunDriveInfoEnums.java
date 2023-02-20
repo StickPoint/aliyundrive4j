@@ -22,6 +22,10 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_PROPERTIES_KEY_SIGN_OUT("sign_out"),
     /**
+     * 阿里云盘-系统配置-key-系统容量查询
+     */
+    ALIYUN_DRIVE_PROPERTIES_KEY_USER_CAPACITY("user_capacity_details"),
+    /**
      * 阿里云盘-系统响应-JSON对象-Key-content
      */
     ALIYUN_DRIVE_RESP_JSON_KEY_CONTENT("content"),
@@ -37,6 +41,10 @@ public enum AliyunDriveInfoEnums {
      * 阿里云盘-系统响应-JSON对象-Key-ck
      */
     ALIYUN_DRIVE_RESP_JSON_KEY_CK("ck"),
+    /**
+     * set-cookie
+     */
+    ALIYUN_DRIVE_COMMON_STR_SET_COOKIE("set-cookie"),
     /**
      * 阿里云盘-系统响应-JSON对象-Key-resultCode
      */
@@ -136,6 +144,7 @@ public enum AliyunDriveInfoEnums {
      * @param enumsStringValue 传入枚举字符串数据
      * @param enumsIntegerValue 传入枚举数值数据
      */
+    @SuppressWarnings("unused")
     AliyunDriveInfoEnums(String enumsStringValue, Integer enumsIntegerValue) {
         this.enumsStringValue = enumsStringValue;
         this.enumsIntegerValue = enumsIntegerValue;

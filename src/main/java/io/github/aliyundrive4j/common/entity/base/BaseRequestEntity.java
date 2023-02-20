@@ -1,7 +1,12 @@
 package io.github.aliyundrive4j.common.entity.base;
 import com.google.gson.annotations.SerializedName;
+import io.github.aliyundrive4j.common.entity.aliyun.AliyunBaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * description: BaseRequestEntity
@@ -11,7 +16,12 @@ import java.io.Serializable;
  * @Author puye(0303)
  * @PackageName io.github.aliyundrive4j.common.entity
  */
-public class BaseRequestEntity implements Serializable {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@ToString
+public class BaseRequestEntity implements AliyunBaseEntity {
 
     @Serial
     private static final long serialVersionUID = -4420006432074106509L;
@@ -37,71 +47,13 @@ public class BaseRequestEntity implements Serializable {
     private Integer urlExpireSec;
 
     private String refreshToken;
+    /**
+     * 请求基本地址
+     */
+    private String aliyundriveRequestUrl;
+    /**
+     * 请求基本请求头
+     */
+    private BaseHeaderEntity aliyundriveRequestBaseHeader;
 
-    public String getOfficeThumbnailProcess() {
-        return officeThumbnailProcess;
-    }
-
-    public void setOfficeThumbnailProcess(String officeThumbnailProcess) {
-        this.officeThumbnailProcess = officeThumbnailProcess;
-    }
-
-    public String getImageThumbnailProcess() {
-        return imageThumbnailProcess;
-    }
-
-    public void setImageThumbnailProcess(String imageThumbnailProcess) {
-        this.imageThumbnailProcess = imageThumbnailProcess;
-    }
-
-    public String getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
-    }
-
-    public String getVideoThumbnailProcess() {
-        return videoThumbnailProcess;
-    }
-
-    public void setVideoThumbnailProcess(String videoThumbnailProcess) {
-        this.videoThumbnailProcess = videoThumbnailProcess;
-    }
-
-    public boolean isPermanently() {
-        return permanently;
-    }
-
-    public void setPermanently(boolean permanently) {
-        this.permanently = permanently;
-    }
-
-    public String getImageUrlProcess() {
-        return imageUrlProcess;
-    }
-
-    public void setImageUrlProcess(String imageUrlProcess) {
-        this.imageUrlProcess = imageUrlProcess;
-    }
-
-    public Integer getUrlExpireSec() {
-        return urlExpireSec;
-    }
-
-    public void setUrlExpireSec(Integer urlExpireSec) {
-        this.urlExpireSec = urlExpireSec;
-    }
-
-    public BaseRequestEntity() {
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }

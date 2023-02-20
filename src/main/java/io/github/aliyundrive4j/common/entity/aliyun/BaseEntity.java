@@ -1,7 +1,11 @@
 package io.github.aliyundrive4j.common.entity.aliyun;
 
 import com.google.gson.annotations.SerializedName;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import java.io.Serial;
 import java.util.Objects;
 
 /**
@@ -12,29 +16,20 @@ import java.util.Objects;
  * @Author fntp
  * @PackageName io.github.aliyundrive4j.common.entity
  */
-public abstract class BaseEntity {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public abstract class BaseEntity implements AliyunBaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = -8420024591064880265L;
 
     @SerializedName("create_at")
     protected String createAt;
 
     @SerializedName("update_at")
     protected String updateAt;
-
-    public String getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(String createAt) {
-        this.createAt = createAt;
-    }
-
-    public String getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(String updateAt) {
-        this.updateAt = updateAt;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -51,13 +46,5 @@ public abstract class BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(createAt, updateAt);
-    }
-
-    protected BaseEntity(String createAt, String updateAt) {
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-    }
-
-    protected BaseEntity() {
     }
 }
