@@ -2,6 +2,7 @@ package io.github.aliyundrive4j;
 import io.github.aliyundrive4j.common.entity.aliyun.AliyunBaseEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.CapacityDetail;
 import io.github.aliyundrive4j.common.entity.aliyun.DriveItemEntity;
+import io.github.aliyundrive4j.common.entity.aliyun.FolderMadeRespEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.LoginQrcodeInfoEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.PdsLoginResult;
 import io.github.aliyundrive4j.common.entity.base.BaseHeaderEntity;
@@ -9,8 +10,10 @@ import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
 import io.github.aliyundrive4j.common.utils.AliyunHttpUtils;
 import io.github.aliyundrive4j.service.IAliyunDriveDriveService;
+import io.github.aliyundrive4j.service.IAliyunDriveFolderService;
 import io.github.aliyundrive4j.service.IAliyunDriveUserService;
 import io.github.aliyundrive4j.service.impl.AliyunDriveDriveServiceImpl;
+import io.github.aliyundrive4j.service.impl.AliyunDriveFolderServiceImpl;
 import io.github.aliyundrive4j.service.impl.AliyunDriveUserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -198,7 +201,7 @@ class HttpTest {
     void testAliyunDriveDefaultGet(){
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
                 .authType("Bearer ")
-                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiYzFjMzcyYWZlMDFmNDVkNGIzYmIxOTMxNDgyZTQ5YWFcIn0iLCJleHAiOjE2NzY4ODc1NjUsImlhdCI6MTY3Njg4MDMwNX0.fXCThy7MH_7Er4GBHO9sCV8XluFW_GAJHOivHk-DCoAdjXXwQP6MJoFGYwgARtvLzlYgMZWxI5xoLq6ip-KfyndxElP-N7xZ2sfpazKPI6ySy0VsPGn3YJ8NwOdBbCt34iDcMExUQKHJomjLZCHVAxaqA5S__Htjr-fEk0AWs0s")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiMDg0OTU3OTU5ZjUzNDJjNDgxODkyODMyMWJlODYyOTlcIn0iLCJleHAiOjE2NzY4OTU3NjQsImlhdCI6MTY3Njg4ODUwNH0.Z-vZiypxIjsvaeFoaQB-3mbbRTc4wYJtfJOkVYgKL1kn4Ryj44QD1F-JvGHxVs203lQt1QTK-nCd_ptsgZM5hnbvYjdgjuMhtYn4St3DxLEpfA0QSfjX7Y3suQCQ_v-FXNW4WThyjHcaEHTF5lG_2PL73bwXwY6LmuF3zH95b-4 ")
                 .build();
         BaseRequestEntity request = BaseRequestEntity.builder().aliyundriveRequestBaseHeader(headerEntity).build();
         IAliyunDriveDriveService driveService = new AliyunDriveDriveServiceImpl();
@@ -224,6 +227,29 @@ class HttpTest {
         log.info(driveItem.toString());
     }
 
-
+    @Test
+    void testMkdir(){
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiMDg0OTU3OTU5ZjUzNDJjNDgxODkyODMyMWJlODYyOTlcIn0iLCJleHAiOjE2NzY4OTU3NjQsImlhdCI6MTY3Njg4ODUwNH0.Z-vZiypxIjsvaeFoaQB-3mbbRTc4wYJtfJOkVYgKL1kn4Ryj44QD1F-JvGHxVs203lQt1QTK-nCd_ptsgZM5hnbvYjdgjuMhtYn4St3DxLEpfA0QSfjX7Y3suQCQ_v-FXNW4WThyjHcaEHTF5lG_2PL73bwXwY6LmuF3zH95b-4")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .driveId("514543902")
+                .all(false)
+                .fields("*")
+                .imageThumbnailProcess("image/resize,w_256/format,jpeg")
+                .imageUrlProcess("image/resize,w_1920/format,jpeg/interlace,1")
+                .limit(20)
+                .orderBy("updated_at")
+                .orderDirection("DESC")
+                .parentFileId("root")
+                .urlExpireSec(14400)
+                .videoThumbnailProcess("video/snapshot,t_1000,f_jpg,ar_auto,w_256")
+                .build();
+        IAliyunDriveFolderService folderService = new AliyunDriveFolderServiceImpl();
+        List<FolderMadeRespEntity> list = folderService.createFolder(request).getData();
+        list.forEach(item->log.info(item.toString()));
+    }
 
 }
