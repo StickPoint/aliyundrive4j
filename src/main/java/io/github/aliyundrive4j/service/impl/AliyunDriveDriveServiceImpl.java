@@ -64,7 +64,7 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
      */
     @Override
     public BaseResponseEntity<List<DriveItemEntity>> getDriveList(BaseRequestEntity baseRequest) {
-        Map<String,String> requestParamMap = new LinkedHashMap<>();
+        Map<String,Object> requestParamMap = new LinkedHashMap<>();
         requestParamMap.put("ownerId",baseRequest.getOwnerId());
         String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_LIST_KEY.getEnumsStringValue()),
@@ -118,7 +118,7 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
     @Override
     public BaseResponseEntity<DriveItemEntity> getDriveInfoByDriveId(BaseRequestEntity baseRequest) {
         // 获得相应结果
-        Map<String,String> paramsMap = new LinkedHashMap<>();
+        Map<String,Object> paramsMap = new LinkedHashMap<>();
         paramsMap.put("drive_id",baseRequest.getDriveId());
         String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_GET_BY_ID_KEY.getEnumsStringValue()),

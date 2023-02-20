@@ -300,7 +300,7 @@ public class AliyunHttpUtils {
      * @param paramBody 参数内容
      * @return 返回一个相应结果
      */
-    public String doPostWithAuth(String requestUrl,String tokenType,String token,Map<String,String> paramBody){
+    public String doPostWithAuth(String requestUrl,String tokenType,String token,Map<String,Object> paramBody){
         HttpResult httpResult = HTTP.async(requestUrl)
                 .bodyType("json")
                 .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
