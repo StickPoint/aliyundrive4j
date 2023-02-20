@@ -26,6 +26,10 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_PROPERTIES_KEY_USER_CAPACITY("user_capacity_details"),
     /**
+     * 阿里云盘-系统配置-key-用户已使用容量查询
+     */
+    ALIYUN_DRIVE_PROPERTIES_KEY_USER_ALREADY_IN_USED_CAPACITY("user_already_in_used_capacity"),
+    /**
      * 阿里云盘-系统响应-JSON对象-Key-content
      */
     ALIYUN_DRIVE_RESP_JSON_KEY_CONTENT("content"),
@@ -89,7 +93,18 @@ public enum AliyunDriveInfoEnums {
      * 阿里云盘系统配置-token刷新-key
      */
     ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_REFRESH_KEY("token_refresh"),
-
+    /**
+     * 阿里云盘系统配置-token-get-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_GET_KEY("token_get"),
+    /**
+     * 阿里云盘系统配置-token-login-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_LOGIN_KEY("token_login"),
+    /**
+     * 阿里云盘系统配置-drive-list-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_LIST_KEY("drive_list"),
     /**
      * 阿里云Http请求日志信息-第001条日志模板
      */

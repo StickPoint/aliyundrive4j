@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -17,16 +18,16 @@ import java.io.Serial;
  * @Author puye(0303)
  * @PackageName io.github.aliyundrive4j.common.entity.aliyun
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @ToString
-public class FileInfoEntity implements AliyunBaseEntity{
+public class FileInfoEntity extends BaseEntity{
 
     @Serial
-    private static final long serialVersionUID = 2343981038208102005L;
-
+    private static final long serialVersionUID = 8148999832838183476L;
     @SerializedName("drive_id")
     private String driveId;
 
@@ -76,5 +77,4 @@ public class FileInfoEntity implements AliyunBaseEntity{
     private String exFieldsInfo;
 
     private boolean trashed;
-
 }

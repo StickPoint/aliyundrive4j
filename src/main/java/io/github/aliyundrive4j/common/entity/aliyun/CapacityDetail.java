@@ -1,5 +1,6 @@
 package io.github.aliyundrive4j.common.entity.aliyun;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,6 +42,10 @@ public class CapacityDetail implements AliyunBaseEntity {
     /**
      * 最新接收时间
      */
-
+    @SerializedName("latest_receive_time")
     private Date latestReceiveTime;
+
+    @SerializedName("drive_used_size")
+    private long driveUsedSize;
+
 }

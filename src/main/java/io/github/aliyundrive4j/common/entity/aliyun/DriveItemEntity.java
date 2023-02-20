@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import java.io.Serial;
@@ -16,12 +17,13 @@ import java.io.Serial;
  * @Author puye(0303)
  * @PackageName io.github.aliyundrive4j.common.entity.aliyun
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @ToString
-public class DriveItemEntity implements AliyunBaseEntity {
+public class DriveItemEntity extends BaseEntity {
 
     @Serial
     private static final long serialVersionUID = -8908437438112700624L;
@@ -71,5 +73,7 @@ public class DriveItemEntity implements AliyunBaseEntity {
 
     @SerializedName("subdomain_id")
     private String subdomainId;
+
+    private String category;
 
 }

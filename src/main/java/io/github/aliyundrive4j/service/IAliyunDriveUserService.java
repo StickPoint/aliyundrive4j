@@ -81,5 +81,12 @@ public interface IAliyunDriveUserService {
      */
     BaseResponseEntity<List<CapacityDetail>> getCapacityDetails(BaseRequestEntity baseRequest);
 
+    /**
+     * 获得用户已使用的容量明细
+     * @param baseRequest 基础请求对象
+     * @return 返回一个阿里云盘用户容量明细
+     */
+    BaseResponseEntity<CapacityDetail> getAlreadyInUsedCapacity(BaseRequestEntity baseRequest);
+
 
 }

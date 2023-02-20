@@ -1,19 +1,20 @@
 package io.github.aliyundrive4j;
 import io.github.aliyundrive4j.common.entity.aliyun.AliyunBaseEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.CapacityDetail;
+import io.github.aliyundrive4j.common.entity.aliyun.DriveItemEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.LoginQrcodeInfoEntity;
-import io.github.aliyundrive4j.common.entity.aliyun.LoginResultEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.PdsLoginResult;
 import io.github.aliyundrive4j.common.entity.base.BaseHeaderEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
 import io.github.aliyundrive4j.common.utils.AliyunHttpUtils;
+import io.github.aliyundrive4j.service.IAliyunDriveDriveService;
 import io.github.aliyundrive4j.service.IAliyunDriveUserService;
+import io.github.aliyundrive4j.service.impl.AliyunDriveDriveServiceImpl;
 import io.github.aliyundrive4j.service.impl.AliyunDriveUserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Base64.Decoder;
@@ -79,7 +80,7 @@ class HttpTest {
     void testGetAliyunDriveQrcodeImageAvailable() {
         log.info("测试获得阿里云盘扫码登录的二维码是否过期");
         IAliyunDriveUserService userService = new AliyunDriveUserServiceImpl();
-        BaseResponseEntity<AliyunBaseEntity> booleanBaseResponseEntity = userService.checkLoginQrcodeStatus("1676857028425","14b8365cd3c921bdf993359453abb6ae");
+        BaseResponseEntity<AliyunBaseEntity> booleanBaseResponseEntity = userService.checkLoginQrcodeStatus("1676880227299","1a14d4bec5217b5e22f4287d85964b14");
         LoginQrcodeInfoEntity data = (LoginQrcodeInfoEntity) booleanBaseResponseEntity.getData();
         log.info(data.toString());
     }
@@ -94,7 +95,7 @@ class HttpTest {
     void testLoginWithQrcodeResultResp() {
         log.info("查询扫码结果，如果用户点击了确认登录，那么查询结果会拿到确认登录返回的bizExt码");
         LoginQrcodeInfoEntity loginQrcodeInfoEntity = new LoginQrcodeInfoEntity();
-        loginQrcodeInfoEntity.setBizExt("eyJwZHNfbG9naW5fcmVzdWx0Ijp7InJvbGUiOiJ1c2VyIiwidXNlckRhdGEiOnsiRGluZ0RpbmdSb2JvdFVybCI6Imh0dHBzOi8vb2FwaS5kaW5ndGFsay5jb20vcm9ib3Qvc2VuZD9hY2Nlc3NfdG9rZW49MGI0YTkzNmQwZTk4YzA4NjA4Y2Q5OWY2OTMzOTNjMThmYTkwNWFhMDg2ODIxNTQ4NWEyODQ5NzUwMTkxNmZlYyIsIkVuY291cmFnZURlc2MiOiLE2rLixtq85NPQ0Ke3tMChx7AxMMP708O7p72ru/G1w9bVye3D4rfRu+HUsSIsIkZlZWRCYWNrU3dpdGNoIjp0cnVlLCJGb2xsb3dpbmdEZXNjIjoiMzQ4NDgzNzIiLCJkaW5nX2Rpbmdfcm9ib3RfdXJsIjoiaHR0cHM6Ly9vYXBpLmRpbmd0YWxrLmNvbS9yb2JvdC9zZW5kP2FjY2Vzc190b2tlbj0wYjRhOTM2ZDBlOThjMDg2MDhjZDk5ZjY5MzM5M2MxOGZhOTA1YWEwODY4MjE1NDg1YTI4NDk3NTAxOTE2ZmVjIiwiZW5jb3VyYWdlX2Rlc2MiOiLE2rLixtq85NPQ0Ke3tMChx7AxMMP708O7p72ru/G1w9bVye3D4rfRu+HUsSIsImZlZWRfYmFja19zd2l0Y2giOnRydWUsImZvbGxvd2luZ19kZXNjIjoiMzQ4NDgzNzIifSwiaXNGaXJzdExvZ2luIjpmYWxzZSwibmVlZExpbmsiOmZhbHNlLCJsb2dpblR5cGUiOiJxckNvZGVMb2dpbiIsIm5pY2tOYW1lIjoiIiwibmVlZFJwVmVyaWZ5IjpmYWxzZSwiYXZhdGFyIjoiaHR0cHM6Ly9pbWcuYWxpeXVuZHJpdmUuY29tL2F2YXRhci9kZWZhdWx0LzAxLnBuZyIsImFjY2Vzc1Rva2VuIjoiZXlKaGJHY2lPaUpTVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SjFjMlZ5U1dRaU9pSXlNelF6TURJMlpqRXhNRE0wWkRSbU9XTTROV0U0WmpRd09UTXdaakJpWWlJc0ltTjFjM1J2YlVwemIyNGlPaUo3WENKamJHbGxiblJKWkZ3aU9sd2ljRXBhU1c1T1NFNHlaRnBYYXpoeFoxd2lMRndpWkc5dFlXbHVTV1JjSWpwY0ltSnFNamxjSWl4Y0luTmpiM0JsWENJNlcxd2lSRkpKVmtVdVFVeE1YQ0lzWENKR1NVeEZMa0ZNVEZ3aUxGd2lWa2xGVnk1QlRFeGNJaXhjSWxOSVFWSkZMa0ZNVEZ3aUxGd2lVMVJQVWtGSFJTNUJURXhjSWl4Y0lsTlVUMUpCUjBWR1NVeEZMa3hKVTFSY0lpeGNJbFZUUlZJdVFVeE1YQ0lzWENKQ1FWUkRTRndpTEZ3aVFVTkRUMVZPVkM1QlRFeGNJaXhjSWtsTlFVZEZMa0ZNVEZ3aUxGd2lTVTVXU1ZSRkxrRk1URndpTEZ3aVUxbE9RMDFCVUZCSlRrY3VURWxUVkZ3aVhTeGNJbkp2YkdWY0lqcGNJblZ6WlhKY0lpeGNJbkpsWmx3aU9sd2lYQ0lzWENKa1pYWnBZMlZmYVdSY0lqcGNJakJtWmpFM016ZzNZMk5qTXpRMk5XUTRNMk0wTXpVd01tTmxNemcyWVRkalhDSjlJaXdpWlhod0lqb3hOamMyT0RZME16STRMQ0pwWVhRaU9qRTJOelk0TlRjd05qaDkuQzdURXZxTzVBOWM1SVpxaEZDaU9SM01KNkFZVVJUb3BLRTllS2lsaF9LdXRJX1JYZnBiWDZiM3AxY2NvVnFkemhfVUZ1RlBSUEEyc3N0ZDVWQV9PdmZiajJNRGdJZzRqYkVBVnB4Tmg2TFFZX3RpZXA3OWtrZ3pleWdzcE5kQ3pYZTA5bWg2WGpiVVVGbXNZNTBTV0VjZnBQR1diaE1Hdkc4Q2dpSGktT1Q4IiwidXNlck5hbWUiOiIxODEqKio5NDgiLCJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImRlZmF1bHREcml2ZUlkIjoiNzM1NTQzOTAyIiwiZXhpc3RMaW5rIjpbXSwiZXhwaXJlc0luIjo3MjAwLCJleHBpcmVUaW1lIjoiMjAyMy0wMi0yMFQwMzozODo0OFoiLCJyZXF1ZXN0SWQiOiIyMzEwOUUzNS0wM0ZFLTREQkEtOUE3Ri01RTQyNDRGOThBNkQiLCJkYXRhUGluU2V0dXAiOmZhbHNlLCJzdGF0ZSI6IiIsInRva2VuVHlwZSI6IkJlYXJlciIsImRhdGFQaW5TYXZlZCI6ZmFsc2UsInJlZnJlc2hUb2tlbiI6IjBmZjE3Mzg3Y2NjMzQ2NWQ4M2M0MzUwMmNlMzg2YTdjIiwic3RhdHVzIjoiZW5hYmxlZCJ9fQ==");
+        loginQrcodeInfoEntity.setBizExt("eyJwZHNfbG9naW5fcmVzdWx0Ijp7InJvbGUiOiJ1c2VyIiwidXNlckRhdGEiOnsiRGluZ0RpbmdSb2JvdFVybCI6Imh0dHBzOi8vb2FwaS5kaW5ndGFsay5jb20vcm9ib3Qvc2VuZD9hY2Nlc3NfdG9rZW49MGI0YTkzNmQwZTk4YzA4NjA4Y2Q5OWY2OTMzOTNjMThmYTkwNWFhMDg2ODIxNTQ4NWEyODQ5NzUwMTkxNmZlYyIsIkVuY291cmFnZURlc2MiOiLE2rLixtq85NPQ0Ke3tMChx7AxMMP708O7p72ru/G1w9bVye3D4rfRu+HUsSIsIkZlZWRCYWNrU3dpdGNoIjp0cnVlLCJGb2xsb3dpbmdEZXNjIjoiMzQ4NDgzNzIiLCJkaW5nX2Rpbmdfcm9ib3RfdXJsIjoiaHR0cHM6Ly9vYXBpLmRpbmd0YWxrLmNvbS9yb2JvdC9zZW5kP2FjY2Vzc190b2tlbj0wYjRhOTM2ZDBlOThjMDg2MDhjZDk5ZjY5MzM5M2MxOGZhOTA1YWEwODY4MjE1NDg1YTI4NDk3NTAxOTE2ZmVjIiwiZW5jb3VyYWdlX2Rlc2MiOiLE2rLixtq85NPQ0Ke3tMChx7AxMMP708O7p72ru/G1w9bVye3D4rfRu+HUsSIsImZlZWRfYmFja19zd2l0Y2giOnRydWUsImZvbGxvd2luZ19kZXNjIjoiMzQ4NDgzNzIifSwiaXNGaXJzdExvZ2luIjpmYWxzZSwibmVlZExpbmsiOmZhbHNlLCJsb2dpblR5cGUiOiJxckNvZGVMb2dpbiIsIm5pY2tOYW1lIjoiIiwibmVlZFJwVmVyaWZ5IjpmYWxzZSwiYXZhdGFyIjoiaHR0cHM6Ly9pbWcuYWxpeXVuZHJpdmUuY29tL2F2YXRhci9kZWZhdWx0LzAxLnBuZyIsImFjY2Vzc1Rva2VuIjoiZXlKaGJHY2lPaUpTVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SjFjMlZ5U1dRaU9pSXlNelF6TURJMlpqRXhNRE0wWkRSbU9XTTROV0U0WmpRd09UTXdaakJpWWlJc0ltTjFjM1J2YlVwemIyNGlPaUo3WENKamJHbGxiblJKWkZ3aU9sd2ljRXBhU1c1T1NFNHlaRnBYYXpoeFoxd2lMRndpWkc5dFlXbHVTV1JjSWpwY0ltSnFNamxjSWl4Y0luTmpiM0JsWENJNlcxd2lSRkpKVmtVdVFVeE1YQ0lzWENKR1NVeEZMa0ZNVEZ3aUxGd2lWa2xGVnk1QlRFeGNJaXhjSWxOSVFWSkZMa0ZNVEZ3aUxGd2lVMVJQVWtGSFJTNUJURXhjSWl4Y0lsTlVUMUpCUjBWR1NVeEZMa3hKVTFSY0lpeGNJbFZUUlZJdVFVeE1YQ0lzWENKQ1FWUkRTRndpTEZ3aVFVTkRUMVZPVkM1QlRFeGNJaXhjSWtsTlFVZEZMa0ZNVEZ3aUxGd2lTVTVXU1ZSRkxrRk1URndpTEZ3aVUxbE9RMDFCVUZCSlRrY3VURWxUVkZ3aVhTeGNJbkp2YkdWY0lqcGNJblZ6WlhKY0lpeGNJbkpsWmx3aU9sd2lYQ0lzWENKa1pYWnBZMlZmYVdSY0lqcGNJbVpsTjJRMU56UTVNV0ZoWmpRM1pEWmhPR1E0TURobFpEVTBOakpoTXpBeFhDSjlJaXdpWlhod0lqb3hOamMyT0RnM05USXlMQ0pwWVhRaU9qRTJOelk0T0RBeU5qSjkuam4wTzgwR1VwcVB3U05IVGxWUkxzaXRnMl9GZDY1QkUtd2tpQzUtTFJLaENKNDBublNhMTM4U1RTWkJqOUlmaWlBdVFSY01wM3hxb1BPcFozX2Y3QnZ5RmlhWWdTRWoyNUR6QnM4SjFHdkwxNUR3a2VTRlhpMmVvQkdOUEtfaXRXWTVjY2NacXMwUVdKSUphOWR0QWRvemM1T2w4T29BUTM4SWVBdnZjeDhJIiwidXNlck5hbWUiOiIxODEqKio5NDgiLCJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImRlZmF1bHREcml2ZUlkIjoiNzM1NTQzOTAyIiwiZXhpc3RMaW5rIjpbXSwiZXhwaXJlc0luIjo3MjAwLCJleHBpcmVUaW1lIjoiMjAyMy0wMi0yMFQxMDowNToyMloiLCJyZXF1ZXN0SWQiOiI1RjUxREIzOS1DRTUxLTQ3MkItOENFOC1BRUYzMEUyRDA5RjYiLCJkYXRhUGluU2V0dXAiOmZhbHNlLCJzdGF0ZSI6IiIsInRva2VuVHlwZSI6IkJlYXJlciIsImRhdGFQaW5TYXZlZCI6ZmFsc2UsInJlZnJlc2hUb2tlbiI6ImZlN2Q1NzQ5MWFhZjQ3ZDZhOGQ4MDhlZDU0NjJhMzAxIiwic3RhdHVzIjoiZW5hYmxlZCJ9fQ==");
         IAliyunDriveUserService userService = new AliyunDriveUserServiceImpl();
         log.info("通过扫码登录回调，最终将登录前需要的信息都传递给最终登录方法");
         BaseResponseEntity<AliyunBaseEntity> pdsLoginResultBaseResponseEntity = userService.doLoginWithQrcode(loginQrcodeInfoEntity);
@@ -104,12 +105,15 @@ class HttpTest {
         log.info(finalResponseEntity.getData().toString());
     }
 
+    /**
+     * 刷新token
+     */
     @Test
     void testRefreshToken() {
         log.info("开始测试刷新token");
         IAliyunDriveUserService aliyunDriveUserService = new AliyunDriveUserServiceImpl();
         BaseRequestEntity baseRequestEntity = new BaseRequestEntity();
-        baseRequestEntity.setRefreshToken("7410a4827774440495702bd2acde215c");
+        baseRequestEntity.setRefreshToken("c1c372afe01f45d4b3bb1931482e49aa");
         BaseResponseEntity<AliyunBaseEntity> aliyunBaseEntityBaseResponseEntity = aliyunDriveUserService.refreshUserToken(baseRequestEntity);
         log.info(aliyunBaseEntityBaseResponseEntity.getData().toString());
     }
@@ -126,6 +130,9 @@ class HttpTest {
         System.out.println(resultJson);
     }
 
+    /**
+     * 测试用户容量查询
+     */
     @Test
     void testUserCapacityDetails(){
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
@@ -136,6 +143,21 @@ class HttpTest {
         IAliyunDriveUserService userService = new AliyunDriveUserServiceImpl();
         List<CapacityDetail> data = userService.getCapacityDetails(request).getData();
         data.forEach(capacityDetail-> log.info(capacityDetail.toString()));
+    }
+
+    /**
+     * 测试用户已使用的容量信息获取
+     */
+    @Test
+    void testUserAlreadyInUsedCapacity(){
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiNjIyYzBjYjI1YWQ5NDY1ZGI0NzkyMDA1Yjc1MmMxNTVcIn0iLCJleHAiOjE2NzY4ODE0NDcsImlhdCI6MTY3Njg3NDE4N30.Xp2anSUHK_zkwlMzrQopJyTnuJNOEqwfX_a-8FA-hXGpLOH6nt02WI7t7IC0bo4Q-0wAqPnD_q_ronEHDN_0SQHuN4HPXV5AjEWjn_TG-IlPvWnuqx08L77Ccv8xf6313ADnPH_uXIXMklazdm5W_akOQJXlduoN0ZXx01wkcsE")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder().aliyundriveRequestBaseHeader(headerEntity).build();
+        IAliyunDriveUserService userService = new AliyunDriveUserServiceImpl();
+        CapacityDetail data = userService.getAlreadyInUsedCapacity(request).getData();
+        log.info(data.toString());
     }
 
     @Test
@@ -149,4 +171,20 @@ class HttpTest {
     private Map<String,String> testMap(Map<String,String> map){
        return Optional.ofNullable(map).orElse(Collections.emptyMap());
     }
+
+    /**
+     * 测试网盘列表信息获取
+     */
+    @Test
+    void testAliyunDriveListGet(){
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiYzFjMzcyYWZlMDFmNDVkNGIzYmIxOTMxNDgyZTQ5YWFcIn0iLCJleHAiOjE2NzY4ODc1NjUsImlhdCI6MTY3Njg4MDMwNX0.fXCThy7MH_7Er4GBHO9sCV8XluFW_GAJHOivHk-DCoAdjXXwQP6MJoFGYwgARtvLzlYgMZWxI5xoLq6ip-KfyndxElP-N7xZ2sfpazKPI6ySy0VsPGn3YJ8NwOdBbCt34iDcMExUQKHJomjLZCHVAxaqA5S__Htjr-fEk0AWs0s")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder().aliyundriveRequestBaseHeader(headerEntity).build();
+        IAliyunDriveDriveService driveService = new AliyunDriveDriveServiceImpl();
+        List<DriveItemEntity> list = driveService.getDriveList(request).getData();
+        list.forEach(item-> log.info(item.toString()));
+    }
+
 }

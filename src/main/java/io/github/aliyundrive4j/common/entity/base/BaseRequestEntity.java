@@ -55,5 +55,9 @@ public class BaseRequestEntity implements AliyunBaseEntity {
      * 请求基本请求头
      */
     private BaseHeaderEntity aliyundriveRequestBaseHeader;
+    /**
+     * 其实就是userId
+     */
+    private String owner;
 
 }

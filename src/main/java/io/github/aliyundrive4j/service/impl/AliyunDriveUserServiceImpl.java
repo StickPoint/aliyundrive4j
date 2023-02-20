@@ -1,6 +1,5 @@
 package io.github.aliyundrive4j.service.impl;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -18,7 +17,6 @@ import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
 import io.github.aliyundrive4j.common.enums.AliyunDriveInfoEnums;
 import io.github.aliyundrive4j.common.exception.AliyunDriveException;
 import io.github.aliyundrive4j.common.utils.AliyunHttpUtils;
-import io.github.aliyundrive4j.common.utils.JsonUtils;
 import io.github.aliyundrive4j.common.utils.PropertyUtils;
 import io.github.aliyundrive4j.service.IAliyunDriveUserService;
 import org.slf4j.Logger;
@@ -266,6 +264,28 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
             List<CapacityDetail> detailList = GSON.fromJson(asJsonArray.toString(), listType);
             if (!detailList.isEmpty()) {
                 return BaseResponseEntity.success(detailList);
+            }
+            log.warn("【AliyunDrive-4j】当前获得的用户容量信息为null");
+        }
+        throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
+    }
+
+    /**
+     * 获得用户已使用的容量明细
+     *
+     * @param baseRequest 基础请求对象
+     * @return 返回一个阿里云盘用户容量明细
+     */
+    @Override
+    public BaseResponseEntity<CapacityDetail> getAlreadyInUsedCapacity(BaseRequestEntity baseRequest) {
+        String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_PROPERTIES_KEY_USER_ALREADY_IN_USED_CAPACITY.getEnumsStringValue()),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), Collections.emptyMap());
+        if (!resp.isEmpty() && !resp.isBlank()) {
+            CapacityDetail capacityDetail = GSON.fromJson(resp, CapacityDetail.class);
+            if (Objects.nonNull(capacityDetail)) {
+                return BaseResponseEntity.success(capacityDetail);
             }
             log.warn("【AliyunDrive-4j】当前获得的用户容量信息为null");
         }

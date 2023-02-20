@@ -40,6 +40,8 @@ public class AliyunHttpUtils {
      * 系统Http请求对象
      */
     private static final HTTP HTTP = OkHttps.getHttp();
+
+    private static final Map<Object,Object> SYS_INFO = PropertyUtils.initProperties();
     /**
      * 私有化构造，启用单例模式
      */
@@ -180,7 +182,7 @@ public class AliyunHttpUtils {
         StringBuilder aliyunDriveCookie2 = getAliyunDriveCookie("https://passport.aliyundrive.com/mini_login.htm?lang=zh_cn&appName=aliyun_drive");
         // 第三步 获得最终cookie字符串
         String finalCookieStr = aliyunDriveCookie1.append(aliyunDriveCookie2).toString();
-        HttpResult httpResult = HTTP.async("https://auth.aliyundrive.com/v2/oauth/token_login")
+        HttpResult httpResult = HTTP.async((String) SYS_INFO.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_LOGIN_KEY.getEnumsStringValue()))
                 .bodyType("json")
                 .addBodyPara("token", accessToken)
                 .addHeader("accept", "application/json, text/plain, */*")
@@ -202,7 +204,7 @@ public class AliyunHttpUtils {
             // 不是JSON对象
             throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
         }
-        HttpResult finalResult = HTTP.async("https://api.aliyundrive.com/token/get")
+        HttpResult finalResult = HTTP.async((String) SYS_INFO.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_GET_KEY.getEnumsStringValue()))
                 .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_TYPE_JSON.getEnumsStringValue())
                 .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_NAME_CONTENT_TYPE.getEnumsStringValue(),
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON.getEnumsStringValue())
@@ -230,7 +232,10 @@ public class AliyunHttpUtils {
         Map<String,String> refreshTokenRequestParamMap = new LinkedHashMap<>();
         refreshTokenRequestParamMap.put("grant_type","refresh_token");
         refreshTokenRequestParamMap.put("refresh_token",refreshTokenStr);
-        HttpResult httpResult = HTTP.async("https://auth.aliyundrive.com/v2/account/token").addBodyPara(refreshTokenRequestParamMap).bodyType("json").post().getResult();
+        HttpResult httpResult = HTTP.async((String) SYS_INFO.get(
+                AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_REFRESH_KEY.getEnumsStringValue()))
+                .addBodyPara(refreshTokenRequestParamMap)
+                .bodyType("json").post().getResult();
         if (AliyunDriveCodeEnums.ALI_SUCCESS.getCode()==httpResult.getStatus()){
             // 请求成功
             return httpResult.getBody().toString();
