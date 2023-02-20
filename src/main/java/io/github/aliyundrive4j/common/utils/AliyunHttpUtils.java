@@ -4,7 +4,6 @@ import com.ejlchina.okhttps.HTTP;
 import com.ejlchina.okhttps.HttpCall;
 import com.ejlchina.okhttps.HttpResult;
 import com.ejlchina.okhttps.OkHttps;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.github.aliyundrive4j.common.enums.AliyunDriveInfoEnums;
@@ -12,10 +11,11 @@ import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
 import io.github.aliyundrive4j.common.exception.AliyunDriveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -35,11 +35,13 @@ public class AliyunHttpUtils {
     /**
      * 系统Http请求工具类实例
      */
-    private static AliyunHttpUtils INSTANCE;
+    private static AliyunHttpUtils aliyunHttpRequest;
     /**
      * 系统Http请求对象
      */
     private static final HTTP HTTP = OkHttps.getHttp();
+
+    private static final Map<Object,Object> SYS_INFO = PropertyUtils.initProperties();
     /**
      * 私有化构造，启用单例模式
      */
@@ -50,13 +52,13 @@ public class AliyunHttpUtils {
      * @return 返回一个HttpUtils请求对象
      */
     public static AliyunHttpUtils getInstance() {
-        if (Objects.isNull(INSTANCE)) {
+        if (Objects.isNull(aliyunHttpRequest)) {
             synchronized (AliyunHttpUtils.class) {
                 log.info(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_TEMPLATE_001.getEnumsStringValue());
-                INSTANCE = new AliyunHttpUtils();
+                aliyunHttpRequest = new AliyunHttpUtils();
             }
         }
-        return INSTANCE;
+        return aliyunHttpRequest;
     }
 
     /**
@@ -139,9 +141,9 @@ public class AliyunHttpUtils {
                 .addHeader("User-Agent",AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_USER_AGENT.getEnumsStringValue())
                 .addHeader("referer","https://aliyundrive.com/")
                 .get().getResult().allHeaders();
-        StringBuilder resultValue = new StringBuilder("");
+        StringBuilder resultValue = new StringBuilder();
         headers.forEach((key,value)->{
-            if ("set-cookie".equals(key)){
+            if (AliyunDriveInfoEnums.ALIYUN_DRIVE_COMMON_STR_SET_COOKIE.getEnumsStringValue().equals(key)){
                 resultValue.append(value).append(";");
             }
         });
@@ -180,7 +182,7 @@ public class AliyunHttpUtils {
         StringBuilder aliyunDriveCookie2 = getAliyunDriveCookie("https://passport.aliyundrive.com/mini_login.htm?lang=zh_cn&appName=aliyun_drive");
         // 第三步 获得最终cookie字符串
         String finalCookieStr = aliyunDriveCookie1.append(aliyunDriveCookie2).toString();
-        HttpResult httpResult = HTTP.async("https://auth.aliyundrive.com/v2/oauth/token_login")
+        HttpResult httpResult = HTTP.async((String) SYS_INFO.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_LOGIN_KEY.getEnumsStringValue()))
                 .bodyType("json")
                 .addBodyPara("token", accessToken)
                 .addHeader("accept", "application/json, text/plain, */*")
@@ -202,7 +204,7 @@ public class AliyunHttpUtils {
             // 不是JSON对象
             throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
         }
-        HttpResult finalResult = HTTP.async("https://api.aliyundrive.com/token/get")
+        HttpResult finalResult = HTTP.async((String) SYS_INFO.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_GET_KEY.getEnumsStringValue()))
                 .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_TYPE_JSON.getEnumsStringValue())
                 .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_NAME_CONTENT_TYPE.getEnumsStringValue(),
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON.getEnumsStringValue())
@@ -230,7 +232,10 @@ public class AliyunHttpUtils {
         Map<String,String> refreshTokenRequestParamMap = new LinkedHashMap<>();
         refreshTokenRequestParamMap.put("grant_type","refresh_token");
         refreshTokenRequestParamMap.put("refresh_token",refreshTokenStr);
-        HttpResult httpResult = HTTP.async("https://auth.aliyundrive.com/v2/account/token").addBodyPara(refreshTokenRequestParamMap).bodyType("json").post().getResult();
+        HttpResult httpResult = HTTP.async((String) SYS_INFO.get(
+                AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_REFRESH_KEY.getEnumsStringValue()))
+                .addBodyPara(refreshTokenRequestParamMap)
+                .bodyType("json").post().getResult();
         if (AliyunDriveCodeEnums.ALI_SUCCESS.getCode()==httpResult.getStatus()){
             // 请求成功
             return httpResult.getBody().toString();
@@ -245,6 +250,7 @@ public class AliyunHttpUtils {
      * @param token 传入一个token
      * @return 返回一个请求结果
      */
+    @SuppressWarnings("unused")
     public String doPost(String requestUrl,Map<String,String> postBodyParam,String token) {
         AtomicInteger errorCounter = new AtomicInteger(1);
         try {
@@ -281,14 +287,30 @@ public class AliyunHttpUtils {
      * @param token 请求所需要携带的token
      * @return 返回一个文件上传之后的响应
      */
+    @SuppressWarnings("unused")
     public String doFileUploadPost(String requestUrl,Map<String,String> paramBody,String token) {
-        HttpResult httpResult = HTTP.async(requestUrl)
-                .bodyType("text")
-                .addBodyPara(paramBody)
-                .post().getResult();
         return null;
     }
 
-
+    /**
+     * 带有Auth认证的基础请求
+     * @param requestUrl 请求地址
+     * @param tokenType token类型
+     * @param token token内容
+     * @param paramBody 参数内容
+     * @return 返回一个相应结果
+     */
+    public String doPostWithAuth(String requestUrl,String tokenType,String token,Map<String,String> paramBody){
+        HttpResult httpResult = HTTP.async(requestUrl)
+                .bodyType("json")
+                .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
+                .addHeader("Authorization", tokenType+token)
+                .post().getResult();
+        if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_OK.getEnumsIntegerValue()) {
+            return httpResult.getBody().toString();
+        }
+        // HTTP请求异常
+        return StringUtils.emptyString();
+    }
 
 }

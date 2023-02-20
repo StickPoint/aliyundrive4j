@@ -1,10 +1,10 @@
 package io.github.aliyundrive4j.common.entity.base;
 
+import io.github.aliyundrive4j.common.entity.aliyun.AliyunBaseEntity;
 import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
 import io.github.aliyundrive4j.common.exception.AliyunDriveException;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * description: BaseBaseResponseEntityEntity
@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @Author puye(0303)
  * @PackageName io.github.aliyundrive4j.common.entity
  */
-public class BaseResponseEntity<T> implements Serializable {
+public class BaseResponseEntity<T> implements AliyunBaseEntity {
 
         @Serial
         private static final long serialVersionUID = 6094122838833401860L;
@@ -91,11 +91,11 @@ public class BaseResponseEntity<T> implements Serializable {
         /**
          * 设置状态
          *
-         * @param AliyunDriveCodeEnums 状态码-枚举
+         * @param aliyunDriveCodeEnums 状态码-枚举
          */
-        public void setStatus(AliyunDriveCodeEnums AliyunDriveCodeEnums) {
-                this.code = AliyunDriveCodeEnums.getCode();
-                this.message = AliyunDriveCodeEnums.getMessage();
+        public void setStatus(AliyunDriveCodeEnums aliyunDriveCodeEnums) {
+                this.code = aliyunDriveCodeEnums.getCode();
+                this.message = aliyunDriveCodeEnums.getMessage();
         }
         
         /**
