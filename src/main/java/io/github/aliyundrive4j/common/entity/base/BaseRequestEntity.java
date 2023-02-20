@@ -58,6 +58,10 @@ public class BaseRequestEntity implements AliyunBaseEntity {
     /**
      * 其实就是userId
      */
-    private String owner;
+    private String ownerId;
+    /**
+     * 网盘Id
+     */
+    private String driveId;
 
 }

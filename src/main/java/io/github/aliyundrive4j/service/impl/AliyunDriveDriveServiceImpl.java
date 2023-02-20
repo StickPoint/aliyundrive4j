@@ -19,8 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * description: AliyunDriveDriveServiceImpl
@@ -62,10 +64,12 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
      */
     @Override
     public BaseResponseEntity<List<DriveItemEntity>> getDriveList(BaseRequestEntity baseRequest) {
+        Map<String,String> requestParamMap = new LinkedHashMap<>();
+        requestParamMap.put("ownerId",baseRequest.getOwnerId());
         String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_LIST_KEY.getEnumsStringValue()),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
-                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), Collections.emptyMap());
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), requestParamMap);
         if (!resp.isEmpty() && !resp.isBlank()) {
             JsonElement respJsonElement = JsonParser.parseString(resp);
             JsonObject jsonObject = respJsonElement.getAsJsonObject();
@@ -81,18 +85,6 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
     }
 
     /**
-     * 查询所有网盘信息,本质上与上面的接口方法一样，目前暂未发现其他区别
-     * POST访问的是这个接口：https://api.aliyundrive.com/v2/drive/list_my_drives
-     *
-     * @param request 传入一个ownerId与权限信息
-     * @return 返回一个网盘集合
-     */
-    @Override
-    public BaseResponseEntity<DriveItemEntity> getDriveListOfUser(BaseRequestEntity request) {
-        return null;
-    }
-
-    /**
      * 默认 drive(网盘)
      * Post请求地址：https://api.aliyundrive.com/v2/drive/get_default_drive
      * 携带token信息直接请求这个接口地址
@@ -100,19 +92,45 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
      * @return 返回的是一个默认的网盘
      */
     @Override
-    public BaseResponseEntity<DriveItemEntity> getDefaultDrive() {
-        return null;
+    public BaseResponseEntity<DriveItemEntity> getDefaultDrive(BaseRequestEntity baseRequest) {
+        // 获得相应结果
+        String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_DEFAULT_KEY.getEnumsStringValue()),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), Collections.emptyMap());
+        if (!resp.isEmpty() && !resp.isBlank()) {
+            DriveItemEntity driveItem = GSON.fromJson(resp, DriveItemEntity.class);
+            if (Objects.nonNull(driveItem)) {
+                return BaseResponseEntity.success(driveItem);
+            }
+            log.warn("【AliyunDrive-4j】当前获得的用户网盘列表信息为null");
+        }
+        throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
     }
 
     /**
      * 根据网盘id查询网盘信息
      * POST请求地址：https://api.aliyundrive.com/v2/drive/get
      *
-     * @param driveId 传入一个网盘id
+     * @param baseRequest 传入一个网盘id
      * @return 返回一个网盘信息
      */
     @Override
-    public BaseResponseEntity<DriveItemEntity> getDriveInfoByDriveId(String driveId) {
-        return null;
+    public BaseResponseEntity<DriveItemEntity> getDriveInfoByDriveId(BaseRequestEntity baseRequest) {
+        // 获得相应结果
+        Map<String,String> paramsMap = new LinkedHashMap<>();
+        paramsMap.put("drive_id",baseRequest.getDriveId());
+        String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_GET_BY_ID_KEY.getEnumsStringValue()),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);
+        if (!resp.isEmpty() && !resp.isBlank()) {
+            DriveItemEntity driveItem = GSON.fromJson(resp, DriveItemEntity.class);
+            if (Objects.nonNull(driveItem)) {
+                return BaseResponseEntity.success(driveItem);
+            }
+            log.warn("【AliyunDrive-4j】当前获得的用户网盘列表信息为null");
+        }
+        throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
     }
 }

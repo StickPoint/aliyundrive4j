@@ -10,10 +10,6 @@ package io.github.aliyundrive4j.common.enums;
  */
 public enum AliyunDriveInfoEnums {
     /**
-     * 阿里云盘-服务标题-文件搜索
-     */
-    ALIYUN_DRIVE_SERVER_FILE_SEARCH("【阿里云盘】文件搜索"),
-    /**
      * 阿里云盘-HTTP请求状态码-ok-200
      */
     ALIYUN_DRIVE_HTTP_STATUS_OK(200),
@@ -105,6 +101,14 @@ public enum AliyunDriveInfoEnums {
      * 阿里云盘系统配置-drive-list-key
      */
     ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_LIST_KEY("drive_list"),
+    /**
+     * 阿里云盘系统配置-drive-default-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_DEFAULT_KEY("drive_default"),
+    /**
+     * 阿里云盘系统配置-drive-get-by-id-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_GET_BY_ID_KEY("drive_getDriveInfoByDriveId"),
     /**
      * 阿里云Http请求日志信息-第001条日志模板
      */

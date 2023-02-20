@@ -181,10 +181,49 @@ class HttpTest {
                 .authType("Bearer ")
                 .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiYzFjMzcyYWZlMDFmNDVkNGIzYmIxOTMxNDgyZTQ5YWFcIn0iLCJleHAiOjE2NzY4ODc1NjUsImlhdCI6MTY3Njg4MDMwNX0.fXCThy7MH_7Er4GBHO9sCV8XluFW_GAJHOivHk-DCoAdjXXwQP6MJoFGYwgARtvLzlYgMZWxI5xoLq6ip-KfyndxElP-N7xZ2sfpazKPI6ySy0VsPGn3YJ8NwOdBbCt34iDcMExUQKHJomjLZCHVAxaqA5S__Htjr-fEk0AWs0s")
                 .build();
-        BaseRequestEntity request = BaseRequestEntity.builder().aliyundriveRequestBaseHeader(headerEntity).build();
+        // 2023-02-20 经过测试发现，这里不带参数ownerId也是一样，照样正常获取网盘列表数据信息
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .ownerId("2343026f11034d4f9c85a8f40930f0bb")
+                .build();
         IAliyunDriveDriveService driveService = new AliyunDriveDriveServiceImpl();
         List<DriveItemEntity> list = driveService.getDriveList(request).getData();
         list.forEach(item-> log.info(item.toString()));
     }
+
+    /**
+     * 测试获取默认网盘信息
+     */
+    @Test
+    void testAliyunDriveDefaultGet(){
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiYzFjMzcyYWZlMDFmNDVkNGIzYmIxOTMxNDgyZTQ5YWFcIn0iLCJleHAiOjE2NzY4ODc1NjUsImlhdCI6MTY3Njg4MDMwNX0.fXCThy7MH_7Er4GBHO9sCV8XluFW_GAJHOivHk-DCoAdjXXwQP6MJoFGYwgARtvLzlYgMZWxI5xoLq6ip-KfyndxElP-N7xZ2sfpazKPI6ySy0VsPGn3YJ8NwOdBbCt34iDcMExUQKHJomjLZCHVAxaqA5S__Htjr-fEk0AWs0s")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder().aliyundriveRequestBaseHeader(headerEntity).build();
+        IAliyunDriveDriveService driveService = new AliyunDriveDriveServiceImpl();
+        DriveItemEntity driveItem = driveService.getDefaultDrive(request).getData();
+        log.info(driveItem.toString());
+    }
+
+    /**
+     * 测试根据网盘id获取网盘信息
+     */
+    @Test
+    void testAliyunDriveInfoGetByDriveId(){
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiYzFjMzcyYWZlMDFmNDVkNGIzYmIxOTMxNDgyZTQ5YWFcIn0iLCJleHAiOjE2NzY4ODc1NjUsImlhdCI6MTY3Njg4MDMwNX0.fXCThy7MH_7Er4GBHO9sCV8XluFW_GAJHOivHk-DCoAdjXXwQP6MJoFGYwgARtvLzlYgMZWxI5xoLq6ip-KfyndxElP-N7xZ2sfpazKPI6ySy0VsPGn3YJ8NwOdBbCt34iDcMExUQKHJomjLZCHVAxaqA5S__Htjr-fEk0AWs0s")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .driveId("514543902")
+                .build();
+        IAliyunDriveDriveService driveService = new AliyunDriveDriveServiceImpl();
+        DriveItemEntity driveItem = driveService.getDriveInfoByDriveId(request).getData();
+        log.info(driveItem.toString());
+    }
+
+
 
 }

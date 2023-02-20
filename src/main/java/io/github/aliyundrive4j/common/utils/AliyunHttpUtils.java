@@ -183,7 +183,7 @@ public class AliyunHttpUtils {
         // 第三步 获得最终cookie字符串
         String finalCookieStr = aliyunDriveCookie1.append(aliyunDriveCookie2).toString();
         HttpResult httpResult = HTTP.async((String) SYS_INFO.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_LOGIN_KEY.getEnumsStringValue()))
-                .bodyType("json")
+                .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_REQUEST_CONTENT_TYPE_JSON.getEnumsStringValue())
                 .addBodyPara("token", accessToken)
                 .addHeader("accept", "application/json, text/plain, */*")
                 .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_NAME_CONTENT_TYPE.getEnumsStringValue(),
@@ -304,7 +304,7 @@ public class AliyunHttpUtils {
         HttpResult httpResult = HTTP.async(requestUrl)
                 .bodyType("json")
                 .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
-                .addHeader("Authorization", tokenType+token)
+                .addHeader("Authorization", tokenType.concat(token))
                 .post().getResult();
         if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_OK.getEnumsIntegerValue()) {
             return httpResult.getBody().toString();
