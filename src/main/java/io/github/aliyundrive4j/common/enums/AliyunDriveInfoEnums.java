@@ -110,6 +110,10 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_GET_BY_ID_KEY("drive_getDriveInfoByDriveId"),
     /**
+     * 阿里云盘系统配置-folder-create-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_FOLDER_CREATE_KEY("folder_create"),
+    /**
      * 阿里云Http请求日志信息-第001条日志模板
      */
     ALIYUN_DRIVE_INFO_TEMPLATE_001("初始化加载HttpIUtils工具类对象"),

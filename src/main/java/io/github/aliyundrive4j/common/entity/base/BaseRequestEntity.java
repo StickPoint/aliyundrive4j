@@ -64,4 +64,18 @@ public class BaseRequestEntity implements AliyunBaseEntity {
      */
     private String driveId;
 
+    private Boolean all;
+    /**
+     * eg: "*"
+     */
+    private String fields;
+
+    private Integer limit;
+
+    private String orderBy;
+
+    private String orderDirection;
+
+    private String parentFileId;
+
 }
