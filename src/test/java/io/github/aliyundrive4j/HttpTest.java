@@ -2,7 +2,7 @@ package io.github.aliyundrive4j;
 import io.github.aliyundrive4j.common.entity.aliyun.AliyunBaseEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.CapacityDetail;
 import io.github.aliyundrive4j.common.entity.aliyun.DriveItemEntity;
-import io.github.aliyundrive4j.common.entity.aliyun.FolderMadeRespEntity;
+import io.github.aliyundrive4j.common.entity.aliyun.FolderServiceRespEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.LoginQrcodeInfoEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.PdsLoginResult;
 import io.github.aliyundrive4j.common.entity.base.BaseHeaderEntity;
@@ -116,7 +116,7 @@ class HttpTest {
         log.info("开始测试刷新token");
         IAliyunDriveUserService aliyunDriveUserService = new AliyunDriveUserServiceImpl();
         BaseRequestEntity baseRequestEntity = new BaseRequestEntity();
-        baseRequestEntity.setRefreshToken("0b1b6e1646574a21a9c1dedc6433f081");
+        baseRequestEntity.setRefreshToken("f9e316ec9dab4cf18b9e818cc2981de3");
         BaseResponseEntity<AliyunBaseEntity> aliyunBaseEntityBaseResponseEntity = aliyunDriveUserService.refreshUserToken(baseRequestEntity);
         log.info(aliyunBaseEntityBaseResponseEntity.getData().toString());
     }
@@ -234,7 +234,7 @@ class HttpTest {
     void testMkdir(){
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
                 .authType("Bearer ")
-                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiMGIxYjZlMTY0NjU3NGEyMWE5YzFkZWRjNjQzM2YwODFcIn0iLCJleHAiOjE2NzY5Njc1MjQsImlhdCI6MTY3Njk2MDI2NH0.L8O12dx2r-Ff9mDsjJXOlYWsnowAyEHxaYONqwQMYIncoizQ6BqPsxL_Q-oF1N0wwyccJeKS4U6KHkHKFtVvBXsoYq4cNzz9m46TtPWjd3SvOim_-zHXWoHwjVMMO8CZcx26jEdENDt39X0X4rdv5-HiQpu349QBdrq_3LxhaQc")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiZjllMzE2ZWM5ZGFiNGNmMThiOWU4MThjYzI5ODFkZTNcIn0iLCJleHAiOjE2NzY5ODI4MTAsImlhdCI6MTY3Njk3NTU1MH0.oFDF48EHIaOKEgGp-kpEaJPX9njJrqruNdVopjV9nUAEiHHeu92E6sd9iQUYYEgkBzg09IpLc-vXpMrAbBUSpmlfVyTgmLNETS20KXsCpOQGAPFZE0AJjGcOBI-DJyJSXW0casNf_Fcgqbf__HIXNYRN9jLsOvD3SiomhKxMG6Q")
                 .build();
         BaseRequestEntity request = BaseRequestEntity.builder()
                 .aliyundriveRequestBaseHeader(headerEntity)
@@ -242,13 +242,79 @@ class HttpTest {
                 .parentFileId("root")
                 .checkNameMode("refuse")
                 .type("folder")
-                .name("顶点音乐4")
+                .name("顶点音乐")
                 .build();
         IAliyunDriveFolderService folderService = new AliyunDriveFolderServiceImpl();
-        FolderMadeRespEntity folderMadeResp = folderService.createFolder(request).getData();
+        FolderServiceRespEntity folderMadeResp = folderService.createFolder(request).getData();
         log.info(folderMadeResp.toString());
     }
 
+    /**
+     * 测试查询文件夹
+     */
+    @Test
+    void testGetDir(){
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiZjllMzE2ZWM5ZGFiNGNmMThiOWU4MThjYzI5ODFkZTNcIn0iLCJleHAiOjE2NzY5ODI4MTAsImlhdCI6MTY3Njk3NTU1MH0.oFDF48EHIaOKEgGp-kpEaJPX9njJrqruNdVopjV9nUAEiHHeu92E6sd9iQUYYEgkBzg09IpLc-vXpMrAbBUSpmlfVyTgmLNETS20KXsCpOQGAPFZE0AJjGcOBI-DJyJSXW0casNf_Fcgqbf__HIXNYRN9jLsOvD3SiomhKxMG6Q")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .driveId("735543902")
+                .all(false)
+                .fields("*")
+                .imageThumbnailProcess("image/resize,w_256/format,jpeg")
+                .imageUrlProcess("image/resize,w_1920/format,jpeg/interlace,1")
+                .limit(20)
+                .orderBy("updated_at")
+                .orderDirection("DESC")
+                .parentFileId("root")
+                .urlExpireSec(14400)
+                .videoThumbnailProcess("video/snapshot,t_1000,f_jpg,ar_auto,w_256")
+                .build();
+        IAliyunDriveFolderService folderService = new AliyunDriveFolderServiceImpl();
+        List<FolderServiceRespEntity> list = folderService.getFolderList(request).getData();
+        list.forEach(folderMadeResp->log.info(folderMadeResp.toString()));
+    }
 
+    /**
+     * 测试修改文件夹：成功
+     */
+    @Test
+    void testUpdateDir(){
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiZjllMzE2ZWM5ZGFiNGNmMThiOWU4MThjYzI5ODFkZTNcIn0iLCJleHAiOjE2NzY5ODI4MTAsImlhdCI6MTY3Njk3NTU1MH0.oFDF48EHIaOKEgGp-kpEaJPX9njJrqruNdVopjV9nUAEiHHeu92E6sd9iQUYYEgkBzg09IpLc-vXpMrAbBUSpmlfVyTgmLNETS20KXsCpOQGAPFZE0AJjGcOBI-DJyJSXW0casNf_Fcgqbf__HIXNYRN9jLsOvD3SiomhKxMG6Q")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .driveId("735543902")
+                .fileId("63f4a09025d821ed3def435bab8f5738521393a9")
+                .name("顶点音乐2")
+                .checkNameMode("refuse")
+                .build();
+        IAliyunDriveFolderService folderService = new AliyunDriveFolderServiceImpl();
+        FolderServiceRespEntity folderMadeResp = folderService.updateFolder(request).getData();
+        log.info(folderMadeResp.toString());
+    }
+
+    /**
+     * 测试删除文件夹：成功
+     */
+    @Test
+    void testDeleteDir(){
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiZjllMzE2ZWM5ZGFiNGNmMThiOWU4MThjYzI5ODFkZTNcIn0iLCJleHAiOjE2NzY5ODI4MTAsImlhdCI6MTY3Njk3NTU1MH0.oFDF48EHIaOKEgGp-kpEaJPX9njJrqruNdVopjV9nUAEiHHeu92E6sd9iQUYYEgkBzg09IpLc-vXpMrAbBUSpmlfVyTgmLNETS20KXsCpOQGAPFZE0AJjGcOBI-DJyJSXW0casNf_Fcgqbf__HIXNYRN9jLsOvD3SiomhKxMG6Q")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .driveId("735543902")
+                .fileId("63f4a09025d821ed3def435bab8f5738521393a9")
+                .build();
+        IAliyunDriveFolderService folderService = new AliyunDriveFolderServiceImpl();
+        FolderServiceRespEntity folderMadeResp = folderService.deleteFolder(request).getData();
+        log.info(folderMadeResp.toString());
+    }
 
 }

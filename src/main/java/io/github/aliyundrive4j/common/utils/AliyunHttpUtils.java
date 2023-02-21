@@ -350,7 +350,7 @@ public class AliyunHttpUtils {
      * @return 返回一个相应结果
      */
     @SuppressWarnings("unused")
-    public String doDeleteRequest(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
+    public String doDeletePost(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
         HttpResult httpResult = HTTP.async(requestUrl)
                 .bodyType("json")
                 .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))

@@ -1,6 +1,11 @@
 package io.github.aliyundrive4j.service.impl;
 import com.google.gson.Gson;
-import io.github.aliyundrive4j.common.entity.aliyun.FolderMadeRespEntity;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import io.github.aliyundrive4j.common.entity.aliyun.FolderServiceRespEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
 import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
@@ -11,8 +16,9 @@ import io.github.aliyundrive4j.common.utils.PropertyUtils;
 import io.github.aliyundrive4j.service.IAliyunDriveFolderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -52,8 +58,8 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
      * @return 返回一个文件夹创建的响应
      */
     @Override
-    public BaseResponseEntity<FolderMadeRespEntity> createFolder(BaseRequestEntity baseRequest) {
-        // 获得相应结果
+    public BaseResponseEntity<FolderServiceRespEntity> createFolder(BaseRequestEntity baseRequest) {
+        // 准备参数
         Map<String,Object> paramsMap = new LinkedHashMap<>();
         paramsMap.put("check_name_mode",baseRequest.getCheckNameMode());
         paramsMap.put("drive_id",baseRequest.getDriveId());
@@ -65,7 +71,7 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);
         if (!resp.isEmpty() && !resp.isBlank()) {
-            FolderMadeRespEntity madeResp = GSON.fromJson(resp, FolderMadeRespEntity.class);
+            FolderServiceRespEntity madeResp = GSON.fromJson(resp, FolderServiceRespEntity.class);
             if (Objects.nonNull(madeResp)) {
                 log.info("创建文件夹成功~");
                 return BaseResponseEntity.success(madeResp);
@@ -73,5 +79,105 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
         }
         throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_JSON_PARSER);
     }
-    
+
+    /**
+     * 删除文件夹
+     *
+     * @param baseRequest 基础请求参数
+     * @return 返回一个删除文件夹的响应
+     */
+    @Override
+    public BaseResponseEntity<FolderServiceRespEntity> deleteFolder(BaseRequestEntity baseRequest) {
+        // 准备参数
+        Map<String,Object> paramsMap = new LinkedHashMap<>();
+        paramsMap.put("drive_id",baseRequest.getDriveId());
+        paramsMap.put("file_id",baseRequest.getFileId());
+        String resp = HTTP_CLIENT.doDeletePost((String) SYS_INFO_MAP.get(
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FOLDER_DELETED_KEY.getEnumsStringValue()),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);
+        if (!resp.isEmpty() && !resp.isBlank()) {
+            FolderServiceRespEntity madeResp = GSON.fromJson(resp, FolderServiceRespEntity.class);
+            if (Objects.nonNull(madeResp)) {
+                log.info("删除文件夹成功~");
+                return BaseResponseEntity.success(madeResp);
+            }
+        }
+        throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_JSON_PARSER);
+    }
+
+    /**
+     * 修改文件夹
+     *
+     * @param baseRequest 基础请求参数
+     * @return 返回一个修改文件夹的响应
+     */
+    @Override
+    public BaseResponseEntity<FolderServiceRespEntity> updateFolder(BaseRequestEntity baseRequest) {
+// 准备参数
+        Map<String,Object> paramsMap = new LinkedHashMap<>();
+        paramsMap.put("drive_id",baseRequest.getDriveId());
+        paramsMap.put("file_id",baseRequest.getFileId());
+        paramsMap.put("name",baseRequest.getName());
+        paramsMap.put("check_name_mode",baseRequest.getCheckNameMode());
+        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) SYS_INFO_MAP.get(
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FOLDER_UPDATE_KEY.getEnumsStringValue()),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);
+        if (!resp.isEmpty() && !resp.isBlank()) {
+            FolderServiceRespEntity madeResp = GSON.fromJson(resp, FolderServiceRespEntity.class);
+            if (Objects.nonNull(madeResp)) {
+                log.info("修改文件夹成功~");
+                return BaseResponseEntity.success(madeResp);
+            }
+        }
+        throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_JSON_PARSER);
+    }
+
+    /**
+     * 查询文件夹
+     *
+     * @param baseRequest 基础请求参数
+     * @return 返回一个查询文件夹的响应
+     */
+    @Override
+    public BaseResponseEntity<List<FolderServiceRespEntity>> getFolderList(BaseRequestEntity baseRequest) {
+        // 准备参数
+        Map<String,Object> paramsMap = new LinkedHashMap<>();
+        paramsMap.put("drive_id",baseRequest.getDriveId());
+        paramsMap.put("all",baseRequest.getAll());
+        paramsMap.put("fields",baseRequest.getFields());
+        paramsMap.put("image_thumbnail_process",baseRequest.getImageThumbnailProcess());
+        paramsMap.put("image_url_process",baseRequest.getImageUrlProcess());
+        paramsMap.put("limit",baseRequest.getLimit());
+        paramsMap.put("order_by",baseRequest.getOrderBy());
+        paramsMap.put("order_direction",baseRequest.getOrderDirection());
+        paramsMap.put("parent_file_id",baseRequest.getParentFileId());
+        paramsMap.put("url_expire_sec",baseRequest.getUrlExpireSec());
+        paramsMap.put("video_thumbnail_process",baseRequest.getVideoThumbnailProcess());
+        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) SYS_INFO_MAP.get(
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FOLDER_GET_KEY.getEnumsStringValue()),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);
+        if (!resp.isEmpty() && !resp.isBlank()) {
+            JsonElement jsonElement = JsonParser.parseString(resp);
+            JsonObject asJsonObject = jsonElement.getAsJsonObject();
+            if (asJsonObject.isJsonObject()) {
+                JsonElement items = asJsonObject.get("items");
+                if (items.isJsonArray()) {
+                    JsonArray asJsonArray = items.getAsJsonArray();
+                    Type listType = new TypeToken<List<FolderServiceRespEntity>>(){}.getType();
+                    List<FolderServiceRespEntity> folderMadeRespEntityList = GSON.fromJson(asJsonArray.toString(), listType);
+                    if (!folderMadeRespEntityList.isEmpty()) {
+                        return BaseResponseEntity.success(folderMadeRespEntityList);
+                    }
+                }
+                JsonElement nextMaker = asJsonObject.get("next_marker");
+                log.info("extra message {}",nextMaker);
+            }
+            throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
+        }
+        return null;
+    }
+
 }
