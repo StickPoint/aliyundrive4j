@@ -14,6 +14,14 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_HTTP_STATUS_OK(200),
     /**
+     * HTTP状态码 201 创建成功
+     */
+    ALIYUN_DRIVE_HTTP_STATUS_CREATED_OK(201),
+    /**
+     * HTTP状态码 204 创建成功
+     */
+    ALIYUN_DRIVE_HTTP_STATUS_DELETED_OK(204),
+    /**
      * 阿里云盘-系统配置-key-登出
      */
     ALIYUN_DRIVE_PROPERTIES_KEY_SIGN_OUT("sign_out"),

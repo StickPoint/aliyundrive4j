@@ -252,7 +252,7 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
      */
     @Override
     public BaseResponseEntity<List<CapacityDetail>> getCapacityDetails(BaseRequestEntity baseRequest) {
-        String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
+        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) SYS_INFO_MAP.get(
                 AliyunDriveInfoEnums.ALIYUN_DRIVE_PROPERTIES_KEY_USER_CAPACITY.getEnumsStringValue()),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), Collections.emptyMap());
@@ -278,7 +278,7 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
      */
     @Override
     public BaseResponseEntity<CapacityDetail> getAlreadyInUsedCapacity(BaseRequestEntity baseRequest) {
-        String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
+        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) SYS_INFO_MAP.get(
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_PROPERTIES_KEY_USER_ALREADY_IN_USED_CAPACITY.getEnumsStringValue()),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), Collections.emptyMap());

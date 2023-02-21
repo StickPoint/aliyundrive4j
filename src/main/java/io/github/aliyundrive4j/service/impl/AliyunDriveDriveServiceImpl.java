@@ -66,7 +66,7 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
     public BaseResponseEntity<List<DriveItemEntity>> getDriveList(BaseRequestEntity baseRequest) {
         Map<String,Object> requestParamMap = new LinkedHashMap<>();
         requestParamMap.put("ownerId",baseRequest.getOwnerId());
-        String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
+        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) SYS_INFO_MAP.get(
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_LIST_KEY.getEnumsStringValue()),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), requestParamMap);
@@ -94,7 +94,7 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
     @Override
     public BaseResponseEntity<DriveItemEntity> getDefaultDrive(BaseRequestEntity baseRequest) {
         // 获得相应结果
-        String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
+        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) SYS_INFO_MAP.get(
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_DEFAULT_KEY.getEnumsStringValue()),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), Collections.emptyMap());
@@ -120,7 +120,7 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
         // 获得相应结果
         Map<String,Object> paramsMap = new LinkedHashMap<>();
         paramsMap.put("drive_id",baseRequest.getDriveId());
-        String resp = HTTP_CLIENT.doPostWithAuth((String) SYS_INFO_MAP.get(
+        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) SYS_INFO_MAP.get(
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_GET_BY_ID_KEY.getEnumsStringValue()),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);

@@ -47,4 +47,10 @@ public class FolderMadeRespEntity extends BaseEntity{
     @SerializedName("user_tags")
     private UserTagsEntity userTags;
 
+    @SerializedName("file_name")
+    private String fileName;
+
+    @SerializedName("encrypt_mode")
+    private String encryptMode;
+
 }
