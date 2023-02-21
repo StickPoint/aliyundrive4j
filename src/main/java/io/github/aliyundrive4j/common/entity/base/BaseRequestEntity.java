@@ -78,4 +78,10 @@ public class BaseRequestEntity implements AliyunBaseEntity {
 
     private String parentFileId;
 
+    private String checkNameMode;
+
+    private String type;
+
+    private String name;
+
 }

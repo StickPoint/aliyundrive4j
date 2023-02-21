@@ -300,13 +300,63 @@ public class AliyunHttpUtils {
      * @param paramBody 参数内容
      * @return 返回一个相应结果
      */
-    public String doPostWithAuth(String requestUrl,String tokenType,String token,Map<String,Object> paramBody){
+    public String doNormalPostWithAuth(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
         HttpResult httpResult = HTTP.async(requestUrl)
                 .bodyType("json")
                 .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
                 .addHeader("Authorization", tokenType.concat(token))
                 .post().getResult();
         if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_OK.getEnumsIntegerValue()) {
+            return httpResult.getBody().toString();
+        }
+        // HTTP请求异常
+        return StringUtils.emptyString();
+    }
+
+    /**
+     * 带有Auth认证的创建类型请求
+     * 为什么单独创建一个方法来做请求，因为阿里云严格遵守HTTP状态码规范
+     * 201就是在远程服务器创建资源成功的响应状态码，对于这类创建响应
+     * 需要单独创建一个方法符合Restful请求响应
+     * @param requestUrl 请求地址
+     * @param tokenType token类型
+     * @param token token内容
+     * @param paramBody 参数内容
+     * @return 返回一个相应结果
+     */
+    public String doCreatePost(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
+        HttpResult httpResult = HTTP.async(requestUrl)
+                .bodyType("json")
+                .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
+                .addHeader("Authorization", tokenType.concat(token))
+                .post().getResult();
+        if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_CREATED_OK.getEnumsIntegerValue()) {
+            return httpResult.getBody().toString();
+        }
+        // HTTP请求异常
+        return StringUtils.emptyString();
+    }
+
+
+    /**
+     * 带有Auth认证的创建类型请求
+     * 为什么单独创建一个方法来做请求，因为阿里云严格遵守HTTP状态码规范
+     * 204就是在远程服务器删除资源成功的响应状态码，对于这类创建响应
+     * 需要单独创建一个方法符合Restful请求响应
+     * @param requestUrl 请求地址
+     * @param tokenType token类型
+     * @param token token内容
+     * @param paramBody 参数内容
+     * @return 返回一个相应结果
+     */
+    @SuppressWarnings("unused")
+    public String doDeletePost(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
+        HttpResult httpResult = HTTP.async(requestUrl)
+                .bodyType("json")
+                .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
+                .addHeader("Authorization", tokenType.concat(token))
+                .post().getResult();
+        if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_DELETED_OK.getEnumsIntegerValue()) {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常

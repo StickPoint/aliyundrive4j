@@ -20,7 +20,7 @@ import java.io.Serial;
 @NoArgsConstructor
 @Builder
 @ToString
-public class FolderMadeRespEntity extends BaseEntity{
+public class FolderServiceRespEntity extends BaseEntity{
     @Serial
     private static final long serialVersionUID = -8945663495667362267L;
 
@@ -46,5 +46,17 @@ public class FolderMadeRespEntity extends BaseEntity{
 
     @SerializedName("user_tags")
     private UserTagsEntity userTags;
+
+    @SerializedName("file_name")
+    private String fileName;
+
+    @SerializedName("encrypt_mode")
+    private String encryptMode;
+
+    @SerializedName("async_task_id")
+    private String asyncTaskId;
+
+    @SerializedName("domain_id")
+    private String domainId;
 
 }

@@ -14,6 +14,14 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_HTTP_STATUS_OK(200),
     /**
+     * HTTP状态码 201 创建成功
+     */
+    ALIYUN_DRIVE_HTTP_STATUS_CREATED_OK(201),
+    /**
+     * HTTP状态码 202 创建成功
+     */
+    ALIYUN_DRIVE_HTTP_STATUS_DELETED_OK(202),
+    /**
      * 阿里云盘-系统配置-key-登出
      */
     ALIYUN_DRIVE_PROPERTIES_KEY_SIGN_OUT("sign_out"),
@@ -113,6 +121,18 @@ public enum AliyunDriveInfoEnums {
      * 阿里云盘系统配置-folder-create-key
      */
     ALIYUN_DRIVE_SYS_PROPERTY_FOLDER_CREATE_KEY("folder_create"),
+    /**
+     * 阿里云盘系统配置-folder-delete-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_FOLDER_DELETED_KEY("folder_delete"),
+    /**
+     * 阿里云盘系统配置-folder-update-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_FOLDER_UPDATE_KEY("folder_update"),
+    /**
+     * 阿里云盘系统配置-folder-delete-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_FOLDER_GET_KEY("folder_get"),
     /**
      * 阿里云Http请求日志信息-第001条日志模板
      */
