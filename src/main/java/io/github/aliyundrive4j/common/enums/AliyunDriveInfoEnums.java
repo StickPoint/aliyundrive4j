@@ -138,6 +138,14 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_SYS_PROPERTY_FILE_GET_BY_ID_KEY("file_get_info_by_id"),
     /**
+     * 创建新的Session
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_CREATE_SESSION_KEY("create_new_session"),
+    /**
+     * 阿里云盘主机域名
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_HOST_KEY("host"),
+    /**
      * 阿里云Http请求日志信息-第001条日志模板
      */
     ALIYUN_DRIVE_INFO_TEMPLATE_001("初始化加载HttpIUtils工具类对象"),

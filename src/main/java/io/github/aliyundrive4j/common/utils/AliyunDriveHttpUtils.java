@@ -19,43 +19,43 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * description: AliyunHttpUtils
+ * description: AliyunDriveHttpUtils
  *
- * @ClassName : AliyunHttpUtils
+ * @ClassName : AliyunDriveHttpUtils
  * @Date 2022/12/15 11:52
  * @Author fntp
  * @PackageName io.github.aliyundrive4j.utils
  */
-public class AliyunHttpUtils {
+public class AliyunDriveHttpUtils {
 
     /**
      * 系统Http请求工具日志
      */
-    private static final Logger log = LoggerFactory.getLogger(AliyunHttpUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(AliyunDriveHttpUtils.class);
     /**
      * 系统Http请求工具类实例
      */
-    private static AliyunHttpUtils aliyunHttpRequest;
+    private static AliyunDriveHttpUtils aliyunHttpRequest;
     /**
      * 系统Http请求对象
      */
     private static final HTTP HTTP = OkHttps.getHttp();
 
-    private static final Map<Object,Object> SYS_INFO = PropertyUtils.initProperties();
+    private static final Map<Object,Object> SYS_INFO = AliyunDrivePropertyUtils.initProperties();
     /**
      * 私有化构造，启用单例模式
      */
-    private AliyunHttpUtils() { }
+    private AliyunDriveHttpUtils() { }
 
     /**
      * 获得系统HttpUtils对象实例
      * @return 返回一个HttpUtils请求对象
      */
-    public static AliyunHttpUtils getInstance() {
+    public static AliyunDriveHttpUtils getInstance() {
         if (Objects.isNull(aliyunHttpRequest)) {
-            synchronized (AliyunHttpUtils.class) {
+            synchronized (AliyunDriveHttpUtils.class) {
                 log.info(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_TEMPLATE_001.getEnumsStringValue());
-                aliyunHttpRequest = new AliyunHttpUtils();
+                aliyunHttpRequest = new AliyunDriveHttpUtils();
             }
         }
         return aliyunHttpRequest;
@@ -177,7 +177,7 @@ public class AliyunHttpUtils {
                 .replaceAll("\\s*","");
         // 第二步 获得授权地址
         String authUrl = "https://auth.aliyundrive.com/v2/oauth/authorize?client_id=" +clientId+
-                "&redirect_uri=https://www.aliyundrive.com/sign/callback&response_type=code&login_type=custom&state={\"origin\":\"https://aliyundrive.com\"}";
+                "&redirect_uri=https://www.aliyundrive.com/sign/callback&response_type=code&login_type=custom&state={origin:https://aliyundrive.com}";
         StringBuilder aliyunDriveCookie1 = getAliyunDriveCookie(authUrl);
         StringBuilder aliyunDriveCookie2 = getAliyunDriveCookie("https://passport.aliyundrive.com/mini_login.htm?lang=zh_cn&appName=aliyun_drive");
         // 第三步 获得最终cookie字符串
@@ -310,7 +310,7 @@ public class AliyunHttpUtils {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常
-        return StringUtils.emptyString();
+        return AliyunDriveStringUtils.emptyString();
     }
 
     /**
@@ -334,7 +334,7 @@ public class AliyunHttpUtils {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常
-        return StringUtils.emptyString();
+        return AliyunDriveStringUtils.emptyString();
     }
 
 
@@ -360,7 +360,7 @@ public class AliyunHttpUtils {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常
-        return StringUtils.emptyString();
+        return AliyunDriveStringUtils.emptyString();
     }
 
     /**
@@ -377,14 +377,47 @@ public class AliyunHttpUtils {
                 .bodyType("json")
                 .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
                 .addHeader("Authorization", tokenType.concat(token))
-                .addHeader("x-device-id","zZVfG1NuVVkCAXrpXIwdeAyE")
-                .addHeader("x-signature","d77dd0aa86faf1ad7168eb8e4e19657374f9913f32a52ba11e47cd6b64736b5951e1a5ff7dcaf28a2884110d3987f8b067a5d8d9e2d7b21b50ccdb97e73ab88600")
+                .addHeader("x-device-id","CYF2GxycZWsCAXPjf9KE2po9")
+                .addHeader("x-signature","f8811ec78839cde6f609de17a63ed3d104849dfb2df77b3386e26f41794d3fad65e2e980d918effdb7c6354dbc0815cfbd147eec01236bd9e664801f1d3c35b300")
                 .post().getResult();
         if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_OK.getEnumsIntegerValue()) {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常
-        return StringUtils.emptyString();
+        return AliyunDriveStringUtils.emptyString();
+    }
+
+    /**
+     * 传入一个阿里云盘公钥, deviceId ,x-signature 值
+     * 在服务器注册deviceId与signature，保持后续业务session正常
+     * @param publicKeyString 公钥字符串
+     * @param deviceIdStr deviceId值
+     * @param xSignatureStr signature值
+     * @return 返回一个阿里云创建新的session的响应
+     */
+    public String createNewSessionPost(String publicKeyString,String deviceIdStr,String xSignatureStr) {
+        Map<String, String> aliyunSessionMap = new LinkedHashMap<>();
+        aliyunSessionMap.put("deviceName","Edge浏览器");
+        aliyunSessionMap.put("modelName","Windows网页版");
+        aliyunSessionMap.put("pubKey",publicKeyString);
+        HttpResult result = HTTP.async((String) SYS_INFO.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_CREATE_SESSION_KEY.getEnumsStringValue()))
+                .bodyType("json")
+                .addHeader("authorization", " Bearer BEARERBEARER")
+                .addHeader("origin", AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_HOST_KEY.getEnumsStringValue())
+                .addHeader("referer", AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_HOST_KEY.getEnumsStringValue().concat("/"))
+                .addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41")
+                .addHeader("x-canary", "client=web,app=adrive,version=v4.0.1")
+                .addHeader("x-device-id", deviceIdStr)
+                .addHeader("x-signature", xSignatureStr)
+                .addBodyPara(aliyunSessionMap)
+                .post().getResult();
+        if (result.getStatus() == AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_OK.getEnumsIntegerValue()) {
+            // 成功在阿里云盘服务器注册了deviceId与signature值，将新使用的deviceId与signature值存储在内存中，以便于后续请求使用
+            SYS_INFO.put("deviceId",deviceIdStr);
+            SYS_INFO.put("signature",xSignatureStr);
+            return result.getBody().toString();
+        }
+        throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_HTTP);
     }
 
 }

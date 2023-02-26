@@ -8,9 +8,9 @@ import io.github.aliyundrive4j.common.exception.AliyunDriveException;
  * @author puye(0303)
  * @since 2023/2/2
  */
-public class IdUtil {
+public class AliyunDriveIdUtil {
     
-    private IdUtil(){
+    private AliyunDriveIdUtil(){
         throw new IllegalStateException("Utility class");
     }
 

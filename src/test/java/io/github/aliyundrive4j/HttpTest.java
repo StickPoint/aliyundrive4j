@@ -9,7 +9,7 @@ import io.github.aliyundrive4j.common.entity.aliyun.PdsLoginResult;
 import io.github.aliyundrive4j.common.entity.base.BaseHeaderEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
-import io.github.aliyundrive4j.common.utils.AliyunHttpUtils;
+import io.github.aliyundrive4j.common.utils.AliyunDriveHttpUtils;
 import io.github.aliyundrive4j.service.IAliyunDriveDriveService;
 import io.github.aliyundrive4j.service.IAliyunDriveFileService;
 import io.github.aliyundrive4j.service.IAliyunDriveFolderService;
@@ -53,7 +53,7 @@ class HttpTest {
     void testHttp() {
         Map<String,String> params = new ConcurrentHashMap<>();
         params.put("key","第三人称");
-        AliyunHttpUtils httpUtils = AliyunHttpUtils.getInstance();
+        AliyunDriveHttpUtils httpUtils = AliyunDriveHttpUtils.getInstance();
         String getResult = httpUtils.doGetWithParams("http://1.2.3.4:5000/v1/wy/search",params);
         log.info(getResult);
     }
@@ -324,7 +324,7 @@ class HttpTest {
     void testGetFileInfoById(){
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
                 .authType("Bearer ")
-                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiYjY1YTc4MzNmM2U0NDk2YmIzYTFhZDc3MWIzNzk2NTFcIn0iLCJleHAiOjE2NzcyMTExMDcsImlhdCI6MTY3NzIwMzg0N30.UdpQU_3PM0LNGvAdBvTQpXZwN-AzXt4ti1ApR71RnD3Uyqmg6aAKFx37GqBZD13iLSqQ8T422pb959rSXFK_ykUUtMAYI2swT5HI0fT6XabHgyMPLRcpmaMHdB4-w1Ky5W6f5WTfk4mfU892Zo5cugy3YbeWqOZmp_vHlpme1GM")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiN2I1ZDJlZTFlYTc2NDAzYWIxMTBjNDg0OWIyOWQ5OTlcIn0iLCJleHAiOjE2Nzc0MDYwMTksImlhdCI6MTY3NzM5ODc1OX0.HUh73XypdRV3kJ397oc_8hukJv5NW1NATvoxz-IcZJ2QQ4bPxHnKJ0_Cyi8waO7AwgzdmzWusc8yUE2wlRdSopUK0rgIgwKrDc6yZS-ZfvvJOb-6vGxwtV-2ORjBE2H5hnCqCr8p1GzEsgq3cFbYGq23fH9g5t9MKQ3UbwHvK_I")
                 .build();
         BaseRequestEntity request = BaseRequestEntity.builder()
                 .aliyundriveRequestBaseHeader(headerEntity)
