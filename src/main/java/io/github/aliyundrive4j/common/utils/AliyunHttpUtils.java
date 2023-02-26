@@ -363,4 +363,28 @@ public class AliyunHttpUtils {
         return StringUtils.emptyString();
     }
 
+    /**
+     * 带有Auth认证的基础请求
+     * 2023-02-24 阿里云修改了文件请求的API请求方式
+     * @param requestUrl 请求地址
+     * @param tokenType token类型
+     * @param token token内容
+     * @param paramBody 参数内容
+     * @return 返回一个相应结果
+     */
+    public String doNormalFilePost(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
+        HttpResult httpResult = HTTP.async(requestUrl)
+                .bodyType("json")
+                .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
+                .addHeader("Authorization", tokenType.concat(token))
+                .addHeader("x-device-id","zZVfG1NuVVkCAXrpXIwdeAyE")
+                .addHeader("x-signature","d77dd0aa86faf1ad7168eb8e4e19657374f9913f32a52ba11e47cd6b64736b5951e1a5ff7dcaf28a2884110d3987f8b067a5d8d9e2d7b21b50ccdb97e73ab88600")
+                .post().getResult();
+        if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_OK.getEnumsIntegerValue()) {
+            return httpResult.getBody().toString();
+        }
+        // HTTP请求异常
+        return StringUtils.emptyString();
+    }
+
 }

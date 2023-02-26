@@ -1,6 +1,7 @@
 package io.github.aliyundrive4j.service;
 
 import io.github.aliyundrive4j.common.entity.aliyun.FileInfoEntity;
+import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
 
 import java.util.List;
@@ -26,10 +27,10 @@ public interface IAliyunDriveFileService {
 
     /**
      * 根据文件id获得文件详细信息
-     * @param fileId 文件id
+     * @param baseRequest 文件id 网盘id
      * @return 返回一个文件详细信息
      */
-    BaseResponseEntity<FileInfoEntity> getFileInfoById(String fileId);
+    BaseResponseEntity<FileInfoEntity> getFileInfoById(BaseRequestEntity baseRequest);
 
     /**
      * 根据文件id删除文件

@@ -34,6 +34,9 @@ public class FileInfoEntity extends BaseEntity{
     @SerializedName("domain_id")
     private String domainId;
 
+    @SerializedName("file_id")
+    private String fileId;
+
     @SerializedName("name")
     private String name;
 
@@ -69,6 +72,9 @@ public class FileInfoEntity extends BaseEntity{
 
     @SerializedName("last_modifier_id")
     private String lastModifierId;
+
+    @SerializedName("user_tags")
+    private UserTagsEntity userTags;
 
     @SerializedName("revision_id")
     private String revisionId;
