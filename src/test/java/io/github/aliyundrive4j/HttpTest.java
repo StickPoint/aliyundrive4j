@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -341,7 +342,7 @@ class HttpTest {
     void testCreateNewSessionWithAliyunDrive(){
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
                 .authType("Bearer ")
-                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiMTljMTlhNDIzNDg5NGQxODljODhkYjVhNTllNzJiOWJcIn0iLCJleHAiOjE2Nzc1Njg2MjUsImlhdCI6MTY3NzU2MTM2NX0.HI_R3GogKQhxBOS_QNNfC9B0ArFtO4Odebr0E7_WC2ws7DjZIVCVkAaws9v1n7RYPHpj7IGvJrUQ4ujiIStlhh4TSCGLDfJ2_zaNnTESlmWdaU5mxYFdL0cFm6aVSyE4iZKhHbJcDFLH5DqsDgVZprhRme1_vOU_mH6_PS29ywk")
+                .authToken("token")
                 .build();
         BaseRequestEntity request = BaseRequestEntity.builder()
                 .aliyundriveRequestBaseHeader(headerEntity)
@@ -350,7 +351,8 @@ class HttpTest {
                 .build();
         AliyunDriveHttpUtils instance = AliyunDriveHttpUtils.getInstance();
         String appId = "25dzX3vbYqktVxyX";
-        String deviceId = "20230224_zZVfG1NuVVkCAXrpXIwdeAyE";
+        //TODO 生成的随机数字与随机uuid都需要存储在系统内存中
+        String deviceId = UUID.randomUUID().toString();
         String userId = "2343026f11034d4f9c85a8f40930f0bb";
         String publicKeyHexStr = AliyunSecurityUtils.getPublicKeyHexStr();
         String signatureHexStr = AliyunSecurityUtils.getSignatureHexStr(appId,deviceId,userId);
@@ -358,6 +360,11 @@ class HttpTest {
         log.info(signatureHexStr);
         String newSessionPost = instance.createNewSessionPost(publicKeyHexStr, deviceId, signatureHexStr);
         log.info(newSessionPost);
+    }
+
+    @Test
+    void testUuid(){
+        log.info(UUID.randomUUID().toString());
     }
 
 }

@@ -402,11 +402,11 @@ public class AliyunDriveHttpUtils {
         aliyunSessionMap.put("pubKey",publicKeyString);
         HttpResult result = HTTP.async((String) SYS_INFO.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_CREATE_SESSION_KEY.getEnumsStringValue()))
                 .bodyType("json")
-                .addHeader("authorization", " Bearer BEARERBEARER")
+                .addHeader("authorization", "你的测试token")
                 .addHeader("origin", AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_HOST_KEY.getEnumsStringValue())
                 .addHeader("referer", AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_HOST_KEY.getEnumsStringValue().concat("/"))
                 .addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41")
-                .addHeader("x-canary", "client=web,app=adrive,version=v4.0.1")
+                .addHeader("x-canary", "client=web,app=adrive,version=v3.17.0")
                 .addHeader("x-device-id", deviceIdStr)
                 .addHeader("x-signature", xSignatureStr)
                 .addBodyPara(aliyunSessionMap)
