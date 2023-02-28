@@ -5,14 +5,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import io.github.aliyundrive4j.common.entity.aliyun.FolderServiceRespEntity;
+import io.github.aliyundrive4j.common.entity.aliyun.FolderInfoEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
 import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
 import io.github.aliyundrive4j.common.enums.AliyunDriveInfoEnums;
 import io.github.aliyundrive4j.common.exception.AliyunDriveException;
-import io.github.aliyundrive4j.common.utils.AliyunHttpUtils;
-import io.github.aliyundrive4j.common.utils.PropertyUtils;
+import io.github.aliyundrive4j.common.utils.AliyunDriveHttpUtils;
+import io.github.aliyundrive4j.common.utils.AliyunDrivePropertyUtils;
 import io.github.aliyundrive4j.service.IAliyunDriveFolderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +46,9 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
      *      我仅仅需要对外提供一个加载本地配置的map即可，让外部程序去做存储，sdk本身在没有接入bean管理
      *      的前提下，本身是无法长期驻留在内存中的，数据会丢失。那么只要服务对象存在于应用内部，就可以保留map
      */
-    private static final Map<Object,Object> SYS_INFO_MAP = PropertyUtils.initProperties();
+    private static final Map<Object,Object> SYS_INFO_MAP = AliyunDrivePropertyUtils.initProperties();
 
-    private static final AliyunHttpUtils HTTP_CLIENT = AliyunHttpUtils.getInstance();
+    private static final AliyunDriveHttpUtils HTTP_CLIENT = AliyunDriveHttpUtils.getInstance();
 
 
     /**
@@ -58,7 +58,7 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
      * @return 返回一个文件夹创建的响应
      */
     @Override
-    public BaseResponseEntity<FolderServiceRespEntity> createFolder(BaseRequestEntity baseRequest) {
+    public BaseResponseEntity<FolderInfoEntity> createFolder(BaseRequestEntity baseRequest) {
         // 准备参数
         Map<String,Object> paramsMap = new LinkedHashMap<>();
         paramsMap.put("check_name_mode",baseRequest.getCheckNameMode());
@@ -71,7 +71,7 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);
         if (!resp.isEmpty() && !resp.isBlank()) {
-            FolderServiceRespEntity madeResp = GSON.fromJson(resp, FolderServiceRespEntity.class);
+            FolderInfoEntity madeResp = GSON.fromJson(resp, FolderInfoEntity.class);
             if (Objects.nonNull(madeResp)) {
                 log.info("创建文件夹成功~");
                 return BaseResponseEntity.success(madeResp);
@@ -87,7 +87,7 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
      * @return 返回一个删除文件夹的响应
      */
     @Override
-    public BaseResponseEntity<FolderServiceRespEntity> deleteFolder(BaseRequestEntity baseRequest) {
+    public BaseResponseEntity<FolderInfoEntity> deleteFolder(BaseRequestEntity baseRequest) {
         // 准备参数
         Map<String,Object> paramsMap = new LinkedHashMap<>();
         paramsMap.put("drive_id",baseRequest.getDriveId());
@@ -97,7 +97,7 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);
         if (!resp.isEmpty() && !resp.isBlank()) {
-            FolderServiceRespEntity madeResp = GSON.fromJson(resp, FolderServiceRespEntity.class);
+            FolderInfoEntity madeResp = GSON.fromJson(resp, FolderInfoEntity.class);
             if (Objects.nonNull(madeResp)) {
                 log.info("删除文件夹成功~");
                 return BaseResponseEntity.success(madeResp);
@@ -113,7 +113,7 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
      * @return 返回一个修改文件夹的响应
      */
     @Override
-    public BaseResponseEntity<FolderServiceRespEntity> updateFolder(BaseRequestEntity baseRequest) {
+    public BaseResponseEntity<FolderInfoEntity> updateFolder(BaseRequestEntity baseRequest) {
 // 准备参数
         Map<String,Object> paramsMap = new LinkedHashMap<>();
         paramsMap.put("drive_id",baseRequest.getDriveId());
@@ -125,7 +125,7 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);
         if (!resp.isEmpty() && !resp.isBlank()) {
-            FolderServiceRespEntity madeResp = GSON.fromJson(resp, FolderServiceRespEntity.class);
+            FolderInfoEntity madeResp = GSON.fromJson(resp, FolderInfoEntity.class);
             if (Objects.nonNull(madeResp)) {
                 log.info("修改文件夹成功~");
                 return BaseResponseEntity.success(madeResp);
@@ -141,7 +141,7 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
      * @return 返回一个查询文件夹的响应
      */
     @Override
-    public BaseResponseEntity<List<FolderServiceRespEntity>> getFolderList(BaseRequestEntity baseRequest) {
+    public BaseResponseEntity<List<FolderInfoEntity>> getFolderList(BaseRequestEntity baseRequest) {
         // 准备参数
         Map<String,Object> paramsMap = new LinkedHashMap<>();
         paramsMap.put("drive_id",baseRequest.getDriveId());
@@ -166,8 +166,8 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
                 JsonElement items = asJsonObject.get("items");
                 if (items.isJsonArray()) {
                     JsonArray asJsonArray = items.getAsJsonArray();
-                    Type listType = new TypeToken<List<FolderServiceRespEntity>>(){}.getType();
-                    List<FolderServiceRespEntity> folderMadeRespEntityList = GSON.fromJson(asJsonArray.toString(), listType);
+                    Type listType = new TypeToken<List<FolderInfoEntity>>(){}.getType();
+                    List<FolderInfoEntity> folderMadeRespEntityList = GSON.fromJson(asJsonArray.toString(), listType);
                     if (!folderMadeRespEntityList.isEmpty()) {
                         return BaseResponseEntity.success(folderMadeRespEntityList);
                     }

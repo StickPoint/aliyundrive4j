@@ -20,7 +20,7 @@ import java.io.Serial;
 @NoArgsConstructor
 @Builder
 @ToString
-public class FolderServiceRespEntity extends BaseEntity{
+public class FolderInfoEntity extends BaseEntity{
     @Serial
     private static final long serialVersionUID = -8945663495667362267L;
 

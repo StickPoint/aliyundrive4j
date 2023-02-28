@@ -13,11 +13,11 @@ import java.util.Properties;
  * @Author puye(0303)
  * @PackageName io.github.aliyundrive4j.common.utils
  */
-public class PropertyUtils {
+public class AliyunDrivePropertyUtils {
     /**
      * 明确告知无法使用构造器：工具类
      */
-    private PropertyUtils() {
+    private AliyunDrivePropertyUtils() {
         throw new IllegalStateException("Utility class");
     }
     /**
@@ -25,7 +25,7 @@ public class PropertyUtils {
      */
     public static Map<Object,Object> initProperties() {
         try {
-            InputStream resourceAsStream = PropertyUtils.class.getClassLoader().getResourceAsStream("application.properties");
+            InputStream resourceAsStream = AliyunDrivePropertyUtils.class.getClassLoader().getResourceAsStream("application.properties");
             Properties properties = new Properties();
             properties.load(resourceAsStream);
             return properties;

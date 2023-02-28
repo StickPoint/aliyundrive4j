@@ -6,9 +6,9 @@ import java.util.Objects;
  * @author puye(0303)
  * @since 2023/2/20
  */
-public class JsonUtils {
+public class AliyunDriveJsonUtils {
 
-    private JsonUtils() {
+    private AliyunDriveJsonUtils() {
         throw new IllegalStateException("Utility class");
     }
 

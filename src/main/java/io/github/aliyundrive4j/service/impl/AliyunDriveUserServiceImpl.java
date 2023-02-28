@@ -16,8 +16,8 @@ import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
 import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
 import io.github.aliyundrive4j.common.enums.AliyunDriveInfoEnums;
 import io.github.aliyundrive4j.common.exception.AliyunDriveException;
-import io.github.aliyundrive4j.common.utils.AliyunHttpUtils;
-import io.github.aliyundrive4j.common.utils.PropertyUtils;
+import io.github.aliyundrive4j.common.utils.AliyunDriveHttpUtils;
+import io.github.aliyundrive4j.common.utils.AliyunDrivePropertyUtils;
 import io.github.aliyundrive4j.service.IAliyunDriveUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,9 +58,9 @@ public class AliyunDriveUserServiceImpl implements IAliyunDriveUserService {
      *      我仅仅需要对外提供一个加载本地配置的map即可，让外部程序去做存储，sdk本身在没有接入bean管理
      *      的前提下，本身是无法长期驻留在内存中的，数据会丢失。那么只要服务对象存在于应用内部，就可以保留map
      */
-    private static final Map<Object,Object> SYS_INFO_MAP = PropertyUtils.initProperties();
+    private static final Map<Object,Object> SYS_INFO_MAP = AliyunDrivePropertyUtils.initProperties();
 
-    private static final AliyunHttpUtils HTTP_CLIENT = AliyunHttpUtils.getInstance();
+    private static final AliyunDriveHttpUtils HTTP_CLIENT = AliyunDriveHttpUtils.getInstance();
 
 
     /**

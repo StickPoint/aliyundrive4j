@@ -10,7 +10,7 @@ import java.util.Objects;
  * @author puye(0303)
  * @since 2023/2/20
  */
-public class StringUtils implements Serializable {
+public class AliyunDriveStringUtils implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -2132546233262511169L;
