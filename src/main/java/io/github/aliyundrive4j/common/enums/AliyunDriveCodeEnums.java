@@ -55,7 +55,9 @@ public enum AliyunDriveCodeEnums {
     // 204xx 特殊
     ERROR_AUTHENTICATION(20401, "没有权限"),
     ERROR_IS_NOT_JSON(20017, "response结果不是json"),
-    ERROR_ACCESS_TOKEN_IS_NULL(20018,"accessToken为空")
+    ERROR_ACCESS_TOKEN_IS_NULL(20018,"accessToken为空"),
+    // 305xx 算法相关
+    ERROR_ALGORITHM_SECURITY(30501,"SHA-256 algorithm not found"),
     ;
     /**
      * 状态码
