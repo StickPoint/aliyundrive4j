@@ -10,6 +10,7 @@ import io.github.aliyundrive4j.common.entity.base.BaseHeaderEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
 import io.github.aliyundrive4j.common.utils.AliyunDriveHttpUtils;
+import io.github.aliyundrive4j.common.utils.AliyunSecurityUtils;
 import io.github.aliyundrive4j.service.IAliyunDriveDriveService;
 import io.github.aliyundrive4j.service.IAliyunDriveFileService;
 import io.github.aliyundrive4j.service.IAliyunDriveFolderService;
@@ -119,7 +120,7 @@ class HttpTest {
         log.info("开始测试刷新token");
         IAliyunDriveUserService aliyunDriveUserService = new AliyunDriveUserServiceImpl();
         BaseRequestEntity baseRequestEntity = new BaseRequestEntity();
-        baseRequestEntity.setRefreshToken("f9e316ec9dab4cf18b9e818cc2981de3");
+        baseRequestEntity.setRefreshToken("-----------");
         BaseResponseEntity<AliyunBaseEntity> aliyunBaseEntityBaseResponseEntity = aliyunDriveUserService.refreshUserToken(baseRequestEntity);
         log.info(aliyunBaseEntityBaseResponseEntity.getData().toString());
     }
@@ -334,6 +335,29 @@ class HttpTest {
         IAliyunDriveFileService fileService = new AliyunDriveFileServiceImpl();
         FileInfoEntity fileInfoEntity = fileService.getFileInfoById(request).getData();
         log.info(fileInfoEntity.toString());
+    }
+
+    @Test
+    void testCreateNewSessionWithAliyunDrive(){
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiMTljMTlhNDIzNDg5NGQxODljODhkYjVhNTllNzJiOWJcIn0iLCJleHAiOjE2Nzc1Njg2MjUsImlhdCI6MTY3NzU2MTM2NX0.HI_R3GogKQhxBOS_QNNfC9B0ArFtO4Odebr0E7_WC2ws7DjZIVCVkAaws9v1n7RYPHpj7IGvJrUQ4ujiIStlhh4TSCGLDfJ2_zaNnTESlmWdaU5mxYFdL0cFm6aVSyE4iZKhHbJcDFLH5DqsDgVZprhRme1_vOU_mH6_PS29ywk")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .driveId("735543902")
+                .fileId("63f81aba393a80b5d1294301b73bfcec83c38cbd")
+                .build();
+        AliyunDriveHttpUtils instance = AliyunDriveHttpUtils.getInstance();
+        String appId = "25dzX3vbYqktVxyX";
+        String deviceId = "20230224_zZVfG1NuVVkCAXrpXIwdeAyE";
+        String userId = "2343026f11034d4f9c85a8f40930f0bb";
+        String publicKeyHexStr = AliyunSecurityUtils.getPublicKeyHexStr();
+        String signatureHexStr = AliyunSecurityUtils.getSignatureHexStr(appId,deviceId,userId);
+        log.info(publicKeyHexStr);
+        log.info(signatureHexStr);
+        String newSessionPost = instance.createNewSessionPost(publicKeyHexStr, deviceId, signatureHexStr);
+        log.info(newSessionPost);
     }
 
 }
