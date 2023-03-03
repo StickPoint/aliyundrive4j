@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.util.UUID;
+import java.util.Objects;
 
 import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
 import io.github.aliyundrive4j.common.enums.AliyunDriveInfoEnums;
@@ -19,7 +19,6 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.crypto.signers.HMacDSAKCalculator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.math.ec.ECPoint;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -70,9 +69,7 @@ public class AliyunSecurityUtils {
      * 真正对外暴露的方法
      * @return 返回signature值
      */
-    public static String getSignatureHexStr(String appId, String deviceId, String userId) {
-        SecureRandom secureRandom = new SecureRandom();
-        int nonce = secureRandom.nextInt();
+    public static String getSignatureHexStr(String appId, String deviceId, String userId, Integer nonce) {
         return sign(appId, deviceId, userId, nonce);
     }
 
@@ -86,11 +83,31 @@ public class AliyunSecurityUtils {
     }
 
     /**
+     * 产生nonce数据
+     * 续租与
+     * @return 返回一个一次性数据
+     */
+    public static int generateNonce(){
+        // 首先看看系统缓存里面是不是有
+        Integer nonce = (Integer) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_NONCE_KEY.getEnumsStringValue());
+        // 如果存在 就看看是不是原始数据
+        if (Objects.nonNull(nonce)) {
+            // 只有首次发起连接的时候才是0 此时是createSession，此后均是续约 renewSession
+            nonce += 1;
+            // 生成完毕 存储在内存中
+            AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_NONCE_KEY.getEnumsStringValue(),nonce);
+            return nonce;
+        }
+        // 如果不存在 说明并没有进行首次deviceId注册，deviceId也不是固定值，那么先返回一个0 后续成功在服务器注册了deviceId与signature之后，内存里面会存有数据
+        return 0;
+    }
+
+    /**
      * 生成公钥的底层方法
      * @return 生成一个公钥字符串，并将字符串转为十六进制数据返回
      */
     private static String getPublicKey() {
-        ECPoint ecPoint = CURVE.getG().multiply(AliyunSecurityUtils.PRIVATE_KEY_PARAM.getD()).normalize();
+        ECPoint ecPoint = CURVE.getG().multiply(PRIVATE_KEY_PARAM.getD()).normalize();
         byte[] publicKeyBytes = ecPoint.getEncoded(false);
         return bytesToHex(publicKeyBytes);
     }
@@ -114,7 +131,7 @@ public class AliyunSecurityUtils {
         // 其中，ECDSASigner类是ECDSA签名算法的实现类，而SHA256Digest类是SHA-256哈希算法的实现类。
         // 此外，使用ParametersWithRandom类将私钥和随机数组成参数传入签名算法的init方法中，以便对数据进行签名
         ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
-        ParametersWithRandom param = new ParametersWithRandom(AliyunSecurityUtils.PRIVATE_KEY_PARAM, SECURE_RANDOM);
+        ParametersWithRandom param = new ParametersWithRandom(PRIVATE_KEY_PARAM, SECURE_RANDOM);
         signer.init(true, param);
         BigInteger[] components = signer.generateSignature(hash);
         // 从签名后的结果中提取出r和s两个参数，并根据s的值判断其所在的曲线的左侧或右侧。
@@ -135,8 +152,12 @@ public class AliyunSecurityUtils {
         System.arraycopy(getBytes(s), 0, signatureBytes, 33, 32);
         // 最后，为了将签名标记为压缩格式，将字节数组的最后一位设置为0x01
         signatureBytes[64] = 0x01;
+        // 转为十六进制
+        String hexStr = bytesToHex(signatureBytes);
+        // 生产完毕之后，将生成的结果存储在配置内存中
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),hexStr);
         // 返回签名结果
-        return bytesToHex(signatureBytes);
+        return hexStr;
     }
 
     private static String repack(String appId, String deviceId, String userId, int nonce) {

@@ -42,17 +42,6 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
      * 全局通用gson对象
      */
     private static final Gson GSON = new Gson();
-    /**
-     * 系统初始化加载一个本地配置MAP
-     * 为什么这么写呢，我考虑了几点：
-     * （1）这个项目采用了模块化，引入了module-info，在降低耦合的需要下，我尽可能少的引入新的依赖，
-     *      不使用Spring来管理bean，并且对象较少，可以直接引用，这是提供给第三方应用使用的，我们尽量
-     *      不使用反射。
-     * （2）这是作为依赖jar运行在main程序中，他不会在主程序中直接进入runtime，
-     *      我仅仅需要对外提供一个加载本地配置的map即可，让外部程序去做存储，sdk本身在没有接入bean管理
-     *      的前提下，本身是无法长期驻留在内存中的，数据会丢失。那么只要服务对象存在于应用内部，就可以保留map
-     */
-    private static final Map<Object,Object> SYS_INFO_MAP = AliyunDrivePropertyUtils.initProperties();
 
     private static final AliyunDriveHttpUtils HTTP_CLIENT = AliyunDriveHttpUtils.getInstance();
 
@@ -66,7 +55,7 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
     public BaseResponseEntity<List<DriveItemEntity>> getDriveList(BaseRequestEntity baseRequest) {
         Map<String,Object> requestParamMap = new LinkedHashMap<>();
         requestParamMap.put("ownerId",baseRequest.getOwnerId());
-        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) SYS_INFO_MAP.get(
+        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) AliyunDrivePropertyUtils.get(
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_LIST_KEY.getEnumsStringValue()),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), requestParamMap);
@@ -94,7 +83,7 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
     @Override
     public BaseResponseEntity<DriveItemEntity> getDefaultDrive(BaseRequestEntity baseRequest) {
         // 获得相应结果
-        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) SYS_INFO_MAP.get(
+        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) AliyunDrivePropertyUtils.get(
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_DEFAULT_KEY.getEnumsStringValue()),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), Collections.emptyMap());
@@ -120,7 +109,7 @@ public class AliyunDriveDriveServiceImpl implements IAliyunDriveDriveService {
         // 获得相应结果
         Map<String,Object> paramsMap = new LinkedHashMap<>();
         paramsMap.put("drive_id",baseRequest.getDriveId());
-        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) SYS_INFO_MAP.get(
+        String resp = HTTP_CLIENT.doNormalPostWithAuth((String) AliyunDrivePropertyUtils.get(
                         AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_DRIVE_GET_BY_ID_KEY.getEnumsStringValue()),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);

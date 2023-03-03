@@ -41,7 +41,7 @@ public class AliyunDriveHttpUtils {
      */
     private static final HTTP HTTP = OkHttps.getHttp();
 
-    private static final Map<Object,Object> SYS_INFO = AliyunDrivePropertyUtils.initProperties();
+    private static final String CONTENT_TYPE = "application/json";
     /**
      * 私有化构造，启用单例模式
      */
@@ -138,8 +138,10 @@ public class AliyunDriveHttpUtils {
      */
     private StringBuilder getAliyunDriveCookie(String requestUrl) {
         ListMap<String> headers = HTTP.async(requestUrl)
-                .addHeader("User-Agent",AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_USER_AGENT.getEnumsStringValue())
-                .addHeader("referer","https://aliyundrive.com/")
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_USER_AGENT.getEnumsStringValue(),
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_VALUE_USER_AGENT.getEnumsStringValue())
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_REFER.getEnumsStringValue(),
+                        "https://aliyundrive.com/")
                 .get().getResult().allHeaders();
         StringBuilder resultValue = new StringBuilder();
         headers.forEach((key,value)->{
@@ -165,8 +167,8 @@ public class AliyunDriveHttpUtils {
     private String getAliyunOriginalToken(String accessToken) {
         // 要想完成登录，首先第一步 获取clientId
         HttpResult clientIdResult = HTTP.async("https://aliyundrive.com/sign/in")
-                .addHeader("User-Agent", AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_USER_AGENT.getEnumsStringValue())
-                .addHeader("referer", "https://aliyundrive.com/").get().getResult();
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_USER_AGENT.getEnumsStringValue(), AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_VALUE_USER_AGENT.getEnumsStringValue())
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_REFER.getEnumsStringValue(), "https://aliyundrive.com/").get().getResult();
         String getClientIdResp = clientIdResult.getBody().toString();
         int startIndex = getClientIdResp.indexOf("client_id:");
         int endIndex = getClientIdResp.indexOf("redirect_uri");
@@ -182,13 +184,12 @@ public class AliyunDriveHttpUtils {
         StringBuilder aliyunDriveCookie2 = getAliyunDriveCookie("https://passport.aliyundrive.com/mini_login.htm?lang=zh_cn&appName=aliyun_drive");
         // 第三步 获得最终cookie字符串
         String finalCookieStr = aliyunDriveCookie1.append(aliyunDriveCookie2).toString();
-        HttpResult httpResult = HTTP.async((String) SYS_INFO.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_LOGIN_KEY.getEnumsStringValue()))
+        HttpResult httpResult = HTTP.async((String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_LOGIN_KEY.getEnumsStringValue()))
                 .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_REQUEST_CONTENT_TYPE_JSON.getEnumsStringValue())
                 .addBodyPara("token", accessToken)
-                .addHeader("accept", "application/json, text/plain, */*")
-                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_NAME_CONTENT_TYPE.getEnumsStringValue(),
-                        AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON.getEnumsStringValue())
-                .addHeader("cookie", finalCookieStr)
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_ACCEPT.getEnumsStringValue(), "application/json, text/plain, */*")
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_CONTENT_TYPE.getEnumsStringValue(),  AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON.getEnumsStringValue())
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_COOKIE.getEnumsStringValue(), finalCookieStr)
                 .post().getResult();
         String respBody = httpResult.getBody().toString();
         JsonElement jsonElement = JsonParser.parseString(respBody);
@@ -204,11 +205,10 @@ public class AliyunDriveHttpUtils {
             // 不是JSON对象
             throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_IS_NOT_JSON);
         }
-        HttpResult finalResult = HTTP.async((String) SYS_INFO.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_GET_KEY.getEnumsStringValue()))
+        HttpResult finalResult = HTTP.async((String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_GET_KEY.getEnumsStringValue()))
                 .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_TYPE_JSON.getEnumsStringValue())
-                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_NAME_CONTENT_TYPE.getEnumsStringValue(),
-                        AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON.getEnumsStringValue())
-                .addHeader("accept", "*/*")
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_CONTENT_TYPE.getEnumsStringValue(), AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON.getEnumsStringValue())
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_ACCEPT.getEnumsStringValue(), "*/*")
                 .addBodyPara("code", codeStr).post().getResult();
         String respResult = finalResult.getBody().toString();
         if (Objects.isNull(respResult)) {
@@ -232,14 +232,16 @@ public class AliyunDriveHttpUtils {
         Map<String,String> refreshTokenRequestParamMap = new LinkedHashMap<>();
         refreshTokenRequestParamMap.put("grant_type","refresh_token");
         refreshTokenRequestParamMap.put("refresh_token",refreshTokenStr);
-        HttpResult httpResult = HTTP.async((String) SYS_INFO.get(
+        HttpResult httpResult = HTTP.async((String) AliyunDrivePropertyUtils.get(
                 AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_TOKEN_REFRESH_KEY.getEnumsStringValue()))
                 .addBodyPara(refreshTokenRequestParamMap)
-                .bodyType("json").post().getResult();
+                .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_OK_HTTPS_BODY_TYPE_JSON.getEnumsStringValue()).post().getResult();
         if (AliyunDriveCodeEnums.ALI_SUCCESS.getCode()==httpResult.getStatus()){
             // 请求成功
             return httpResult.getBody().toString();
         }
+        log.error(httpResult.getBody().toString());
+        httpResult.close();
         return null;
     }
 
@@ -256,8 +258,8 @@ public class AliyunDriveHttpUtils {
         try {
             HttpResult httpResult = HTTP.async(requestUrl)
                     .addBodyPara(postBodyParam)
-                    .addHeader("authorization", token)
-                    .addHeader("Content-Type", "application/json")
+                    .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_AUTHORIZATION.getEnumsStringValue(), token)
+                    .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_CONTENT_TYPE.getEnumsStringValue(), CONTENT_TYPE)
                     .post().getResult();
             if (AliyunDriveCodeEnums.ALI_BLOCK.getCode() == httpResult.getStatus()){
                 log.warn(AliyunDriveCodeEnums.ALI_BLOCK.getMessage());
@@ -267,7 +269,7 @@ public class AliyunDriveHttpUtils {
                 return httpResult.getBody().toString();
             }
         } catch (AliyunDriveException exception) {
-            if (errorCounter.get()>6){
+            if (errorCounter.get()>AliyunDriveInfoEnums.ALIYUN_DRIVE_COMMON_NUMBER_6.getEnumsIntegerValue()){
                 return null;
             }else {
                 return doPost(requestUrl,postBodyParam,token);
@@ -302,14 +304,16 @@ public class AliyunDriveHttpUtils {
      */
     public String doNormalPostWithAuth(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
         HttpResult httpResult = HTTP.async(requestUrl)
-                .bodyType("json")
+                .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_OK_HTTPS_BODY_TYPE_JSON.getEnumsStringValue())
                 .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
-                .addHeader("Authorization", tokenType.concat(token))
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_AUTHORIZATION.getEnumsStringValue(), tokenType.concat(token))
                 .post().getResult();
         if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_OK.getEnumsIntegerValue()) {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常
+        log.error(httpResult.getBody().toString());
+        httpResult.close();
         return AliyunDriveStringUtils.emptyString();
     }
 
@@ -326,17 +330,18 @@ public class AliyunDriveHttpUtils {
      */
     public String doCreatePost(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
         HttpResult httpResult = HTTP.async(requestUrl)
-                .bodyType("json")
+                .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_OK_HTTPS_BODY_TYPE_JSON.getEnumsStringValue())
                 .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
-                .addHeader("Authorization", tokenType.concat(token))
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_AUTHORIZATION.getEnumsStringValue(), tokenType.concat(token))
                 .post().getResult();
         if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_CREATED_OK.getEnumsIntegerValue()) {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常
+        log.error(httpResult.getBody().toString());
+        httpResult.close();
         return AliyunDriveStringUtils.emptyString();
     }
-
 
     /**
      * 带有Auth认证的创建类型请求
@@ -352,14 +357,16 @@ public class AliyunDriveHttpUtils {
     @SuppressWarnings("unused")
     public String doDeletePost(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
         HttpResult httpResult = HTTP.async(requestUrl)
-                .bodyType("json")
+                .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_OK_HTTPS_BODY_TYPE_JSON.getEnumsStringValue())
                 .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
-                .addHeader("Authorization", tokenType.concat(token))
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_AUTHORIZATION.getEnumsStringValue(), tokenType.concat(token))
                 .post().getResult();
         if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_DELETED_OK.getEnumsIntegerValue()) {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常
+        log.error(httpResult.getBody().toString());
+        httpResult.close();
         return AliyunDriveStringUtils.emptyString();
     }
 
@@ -374,49 +381,89 @@ public class AliyunDriveHttpUtils {
      */
     public String doNormalFilePost(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
         HttpResult httpResult = HTTP.async(requestUrl)
-                .bodyType("json")
+                .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_OK_HTTPS_BODY_TYPE_JSON.getEnumsStringValue())
                 .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
-                .addHeader("Authorization", tokenType.concat(token))
-                .addHeader("x-device-id","CYF2GxycZWsCAXPjf9KE2po9")
-                .addHeader("x-signature","f8811ec78839cde6f609de17a63ed3d104849dfb2df77b3386e26f41794d3fad65e2e980d918effdb7c6354dbc0815cfbd147eec01236bd9e664801f1d3c35b300")
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_AUTHORIZATION.getEnumsStringValue(),
+                        tokenType.concat(token))
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_X_DEVICE_ID.getEnumsStringValue(),
+                        (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue()))
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_SIGNATURE.getEnumsStringValue(),
+                        (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue()))
                 .post().getResult();
         if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_OK.getEnumsIntegerValue()) {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常
+        log.error(httpResult.getBody().toString());
+        httpResult.close();
         return AliyunDriveStringUtils.emptyString();
     }
 
     /**
      * 传入一个阿里云盘公钥, deviceId ,x-signature 值
      * 在服务器注册deviceId与signature，保持后续业务session正常
-     * @param publicKeyString 公钥字符串
-     * @param deviceIdStr deviceId值
-     * @param xSignatureStr signature值
      * @return 返回一个阿里云创建新的session的响应
      */
-    public String createNewSessionPost(String publicKeyString,String deviceIdStr,String xSignatureStr) {
+    public boolean createNewSessionOrRenewSessionPost(String tokenType, String token) {
+        // 首先需要获得阿里云盘公钥 这是创建新的连接，所以需要怎么的呢，需要数据都是新生成的 创建新的session连接之前，
+        String publicKeyHexStr = AliyunSecurityUtils.getPublicKeyHexStr();
+        log.info("公钥：{}",publicKeyHexStr);
+        // 其次生成deviceId
+        String deviceId = AliyunDriveIdUtil.getDeviceId();
+        // 然后获取nonce 在第一次注册的时候，是 0 createSession的时候是0 续租的时候是 nonce_now + 1
+        int nonce = AliyunSecurityUtils.generateNonce();
+        log.info("nonce：{}", nonce);
+        // 最后生成signature十六进制字符串数据
+        String signatureHexStr = AliyunSecurityUtils.getSignatureHexStr(
+                (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_APP_ID.getEnumsStringValue()),
+                deviceId, (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_USER_ID.getEnumsStringValue()), nonce);
         Map<String, String> aliyunSessionMap = new LinkedHashMap<>();
-        aliyunSessionMap.put("deviceName","Edge浏览器");
-        aliyunSessionMap.put("modelName","Windows网页版");
-        aliyunSessionMap.put("pubKey",publicKeyString);
-        HttpResult result = HTTP.async((String) SYS_INFO.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_CREATE_SESSION_KEY.getEnumsStringValue()))
-                .bodyType("json")
-                .addHeader("authorization", "你的测试token")
-                .addHeader("origin", AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_HOST_KEY.getEnumsStringValue())
-                .addHeader("referer", AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_HOST_KEY.getEnumsStringValue().concat("/"))
-                .addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41")
-                .addHeader("x-canary", "client=web,app=adrive,version=v3.17.0")
-                .addHeader("x-device-id", deviceIdStr)
-                .addHeader("x-signature", xSignatureStr)
+        aliyunSessionMap.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_KEY_DEVICE_NAME.getEnumsStringValue(),
+                AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_VALUE_DEVICE_NAME.getEnumsStringValue());
+        aliyunSessionMap.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_KEY_MODEL_NAME.getEnumsStringValue(),
+                AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_VALUE_MODEL_NAME.getEnumsStringValue());
+        aliyunSessionMap.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_KEY_PUB_KEY.getEnumsStringValue(), publicKeyHexStr);
+        HttpResult result = HTTP.async((String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_CREATE_SESSION_KEY.getEnumsStringValue()))
+                .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_OK_HTTPS_BODY_TYPE_JSON.getEnumsStringValue())
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_AUTHORIZATION.getEnumsStringValue(), tokenType.concat(token))
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_ORIGIN.getEnumsStringValue(),
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_HOST_KEY.getEnumsStringValue())
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_REFER.getEnumsStringValue(),
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_HOST_KEY.getEnumsStringValue().concat("/"))
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_USER_AGENT.getEnumsStringValue(),
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_VALUE_USER_AGENT.getEnumsStringValue())
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_X_CANARY.getEnumsStringValue(),
+                        AliyunDriveInfoEnums.ALIYUN_DRIVE_REQUEST_HEADER_VALUE_X_CANARY.getEnumsStringValue())
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_X_DEVICE_ID.getEnumsStringValue(), deviceId)
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_SIGNATURE.getEnumsStringValue(), signatureHexStr)
                 .addBodyPara(aliyunSessionMap)
                 .post().getResult();
         if (result.getStatus() == AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_OK.getEnumsIntegerValue()) {
             // 成功在阿里云盘服务器注册了deviceId与signature值，将新使用的deviceId与signature值存储在内存中，以便于后续请求使用
-            SYS_INFO.put("deviceId",deviceIdStr);
-            SYS_INFO.put("signature",xSignatureStr);
-            return result.getBody().toString();
+            log.info("HTTP请求成功~解析响应中");
+            String bodyContent = result.getBody().toString();
+            JsonElement jsonResult = JsonParser.parseString(bodyContent);
+            boolean sessionResult = jsonResult.getAsJsonObject().get("result").getAsBoolean();
+            if (sessionResult) {
+                log.info("成功注册或续租了session！正在存储nonce的值，等失效后再次创建");
+                AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_NONCE_KEY.getEnumsStringValue(), nonce);
+                return true;
+            }
+            log.info("请求阿里云注册deviceId与Signature被拒绝 {}",bodyContent);
+            AliyunDrivePropertyUtils.remove(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue());
+            AliyunDrivePropertyUtils.remove(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue());
+            log.info("已清除上一次操作所生成的deviceId与signature");
+            // 关闭流
+            result.close();
+            return false;
+        }else {
+            // 没有成功在阿里云盘注册deviceId与signature值，将生成的时候存进去的值先给他干掉
+            AliyunDrivePropertyUtils.remove(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue());
+            AliyunDrivePropertyUtils.remove(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue());
         }
+        // 如果连最基本的HTTP请求都不通过，直接pass
+        log.error("请求发生了错误，请查看错误响应：{}",result.getBody());
+        result.close();
         throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_HTTP);
     }
 

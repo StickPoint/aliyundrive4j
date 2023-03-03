@@ -58,6 +58,8 @@ public enum AliyunDriveCodeEnums {
     ERROR_ACCESS_TOKEN_IS_NULL(20018,"accessToken为空"),
     // 305xx 算法相关
     ERROR_ALGORITHM_SECURITY(30501,"SHA-256 algorithm not found"),
+    // 500xx 服务内部错误
+    ERROR_PROPERTIES_LOAD(50001,"加载应用配置参数出现异常"),
     ;
     /**
      * 状态码
