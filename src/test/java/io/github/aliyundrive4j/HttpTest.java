@@ -325,8 +325,8 @@ class HttpTest {
 
     @Test
     void testGetFileInfoById(){
-        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(),"cac5fb67787a41a99cadebf14d2a5116");
-        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),"1b9bc18ccae601be1ef8f53145e1f4040e36c4dc75f6f3c571cd27887ed3c36a6d464d011c31e48deb103973abc4e9e12308b1b61877659f64839fb1dd54a9bb01");
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(),"04f0b6f06e9b7cd0ac8cc73b");
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),"1b8e931a9b8d240a7e07a679a1159b579282f26983a1ff025d14ee9fef453f1e6138163959a145ca1d239ea3e8b18b910a53aa426333497b78a670b62489f9d101");
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
                 .authType("Bearer ")
                 .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiZGQ3YzcwZDE1N2Y3NDc1ODhhZjNmMmY0NDIxZTBhNTZcIn0iLCJleHAiOjE2Nzc4MTMyOTIsImlhdCI6MTY3NzgwNjAzMn0.VeGLiEwFqjGVC0LsRd6hXsLr5sC4yjOgCNRzn7F1kt1cXOhR1Ny-CFa90I0L4_uecQGVQoP8DrUkhnEL7GXv7Ruap1X7Jy_iP0l9kprWeG32aWIraAJaT2NGnXP2YZaV14Htnjl3UF_sTJg8a30xkJzmThbS2thjYY956Uzj7UM")
@@ -341,13 +341,18 @@ class HttpTest {
         log.info(fileInfoEntity.toString());
     }
 
+    /**
+     * test
+     * deviceIdStr：04f0b6f06e9b7cd0ac8cc73b
+     * signatureStr：1b8e931a9b8d240a7e07a679a1159b579282f26983a1ff025d14ee9fef453f1e6138163959a145ca1d239ea3e8b18b910a53aa426333497b78a670b62489f9d101
+     */
     @Test
     void testCreateNewSessionWithAliyunDrive(){
         AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_APP_ID.getEnumsStringValue(),"25dzX3vbYqktVxyX");
         AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_USER_ID.getEnumsStringValue(),"2343026f11034d4f9c85a8f40930f0bb");
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
                 .authType("Bearer ")
-                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiMzcyOTAzYTVjNzkwNDI2Yjg3NTg1N2Y3NDQwM2VkNTZcIn0iLCJleHAiOjE2Nzc4Mzc5ODIsImlhdCI6MTY3NzgzMDcyMn0.brxRMSMh2nGkf_Te24ekdgOdlrPpBr9j8B7TgTULdM_rijqcDYFqvvHtO4zUrviHMcIqFFJ-JD2Jo7V1A75DFchb5-Gf-AFP7nk2iXEeWPmxq1PURnFNJoS3fyvOFQ_UzKl0OqtHYULsAXREJYbkLstcj8XaGZnIkxP05QqBfoQ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiY2UyMTJjZTIzZGM2NDJlOWIzNzQ1NDcxZTAzYjk5ZGJcIn0iLCJleHAiOjE2NzkwNDk2MzksImlhdCI6MTY3OTA0MjM3OX0.H8PXQbvfTzlRPpTZFSKfkQPPAnxN5vYni61NcWsaR_fjj5f2o9r7YiZwG6yBXRzFTw9-rGhqk6owZtstQYDmP1FPnBLuWV0y8otv3wyoLa4MTGDzHxFMokqX9VvB0OWh3lXiJdcOZCLzU58mHSzUclku-zWG3CbYMnSU7mvFVU4")
                 .build();
         AliyunDriveHttpUtils instance = AliyunDriveHttpUtils.getInstance();
         boolean createSessionResult = instance.createNewSessionOrRenewSessionPost(headerEntity.getAuthType(), headerEntity.getAuthToken());

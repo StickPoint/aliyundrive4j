@@ -34,6 +34,22 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_COMMON_NUMBER_6(6),
     /**
+     * 阿里云盘-通用数字-3
+     */
+    ALIYUN_DRIVE_COMMON_NUMBER_3(3),
+    /**
+     * 阿里云盘-通用数字-4
+     */
+    ALIYUN_DRIVE_COMMON_NUMBER_4(4),
+    /**
+     * 阿里云盘-通用数字-16
+     */
+    ALIYUN_DRIVE_COMMON_NUMBER_16(16),
+    /**
+     * 阿里云盘-通用数字-8
+     */
+    ALIYUN_DRIVE_COMMON_NUMBER_8(8),
+    /**
      * HTTP状态码 202 创建成功
      */
     ALIYUN_DRIVE_HTTP_STATUS_DELETED_OK(202),

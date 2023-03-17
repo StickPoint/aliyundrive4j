@@ -1,5 +1,4 @@
 package io.github.aliyundrive4j.common.utils;
-
 import io.github.aliyundrive4j.common.enums.AliyunDriveCodeEnums;
 import io.github.aliyundrive4j.common.enums.AliyunDriveInfoEnums;
 import io.github.aliyundrive4j.common.exception.AliyunDriveException;
@@ -60,7 +59,7 @@ public class AliyunDriveIdUtil {
     /**
      * 采用URL Base64字符，即把“+/”换成“-_”
      */
-    private static final char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=".toCharArray();
+    private static final char[] ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=".toCharArray();
 
 
     /**
@@ -146,7 +145,7 @@ public class AliyunDriveIdUtil {
         long msb = uuid.getMostSignificantBits();
         long lsb = uuid.getLeastSignificantBits();
         byte[] buffer = new byte[16];
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < AliyunDriveInfoEnums.ALIYUN_DRIVE_COMMON_NUMBER_8.getEnumsIntegerValue(); i++) {
             buffer[i] = (byte) ((msb >>> 8 * (7 - i)) & 0xFF);
             buffer[i + 8] = (byte) ((lsb >>> 8 * (7 - i)) & 0xFF);
         }
@@ -165,7 +164,7 @@ public class AliyunDriveIdUtil {
     /**
      * 获取指定位数的UUID
      * @param bits 指定位数
-     * @return 获得指定位数的uuuid
+     * @return 获得指定位数的uuid
      */
     @SuppressWarnings("unused")
     public static String getUuidBits(int bits) {
@@ -181,8 +180,8 @@ public class AliyunDriveIdUtil {
         int bt2 = 8;
         int mask;
         int offsetm;
-        int offsetl;
-        for(; bit < 16; bit += 3, idx += 4) {
+        int offset;
+        for(; bit < AliyunDriveInfoEnums.ALIYUN_DRIVE_COMMON_NUMBER_16.getEnumsIntegerValue(); bit += AliyunDriveInfoEnums.ALIYUN_DRIVE_COMMON_NUMBER_3.getEnumsIntegerValue(), idx += AliyunDriveInfoEnums.ALIYUN_DRIVE_COMMON_NUMBER_4.getEnumsIntegerValue()) {
             offsetm = 64 - (bit + 3) * 8;
             tmp = 0;
             if(bt1 > 3) {
@@ -203,22 +202,22 @@ public class AliyunDriveIdUtil {
                 }
             }
             if(offsetm < 0) {
-                offsetl = 64 + offsetm;
-                tmp |= ((offsetl < 0) ? lsb : (lsb >>> offsetl)) & mask;
+                offset = 64 + offsetm;
+                tmp |= ((offset < 0) ? lsb : (lsb >>> offset)) & mask;
             }
             if(bit == 15) {
-                out[idx + 3] = alphabet[64];
-                out[idx + 2] = alphabet[64];
+                out[idx + 3] = ALPHABET[64];
+                out[idx + 2] = ALPHABET[64];
                 tmp <<= 4;
             } else {
-                out[idx + 3] = alphabet[tmp & 0x3f];
+                out[idx + 3] = ALPHABET[tmp & 0x3f];
                 tmp >>= 6;
-                out[idx + 2] = alphabet[tmp & 0x3f];
+                out[idx + 2] = ALPHABET[tmp & 0x3f];
                 tmp >>= 6;
             }
-            out[idx + 1] = alphabet[tmp & 0x3f];
+            out[idx + 1] = ALPHABET[tmp & 0x3f];
             tmp >>= 6;
-            out[idx] = alphabet[tmp & 0x3f];
+            out[idx] = ALPHABET[tmp & 0x3f];
         }
         return new String(out, 0, bits);
     }
