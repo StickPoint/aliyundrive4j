@@ -306,6 +306,7 @@ class HttpTest {
 
     /**
      * 测试删除文件夹：成功
+     * 2023-02-17 测试通过
      */
     @Test
     void testDeleteDir(){
@@ -323,13 +324,17 @@ class HttpTest {
         log.info(folderMadeResp.toString());
     }
 
+    /**
+     * 阿里云盘-测试-通过文件ID+网盘ID查询文件信息
+     * 2023-03-17 测试通过
+     */
     @Test
     void testGetFileInfoById(){
         AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(),"04f0b6f06e9b7cd0ac8cc73b");
         AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),"1b8e931a9b8d240a7e07a679a1159b579282f26983a1ff025d14ee9fef453f1e6138163959a145ca1d239ea3e8b18b910a53aa426333497b78a670b62489f9d101");
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
                 .authType("Bearer ")
-                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiZGQ3YzcwZDE1N2Y3NDc1ODhhZjNmMmY0NDIxZTBhNTZcIn0iLCJleHAiOjE2Nzc4MTMyOTIsImlhdCI6MTY3NzgwNjAzMn0.VeGLiEwFqjGVC0LsRd6hXsLr5sC4yjOgCNRzn7F1kt1cXOhR1Ny-CFa90I0L4_uecQGVQoP8DrUkhnEL7GXv7Ruap1X7Jy_iP0l9kprWeG32aWIraAJaT2NGnXP2YZaV14Htnjl3UF_sTJg8a30xkJzmThbS2thjYY956Uzj7UM")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiY2UyMTJjZTIzZGM2NDJlOWIzNzQ1NDcxZTAzYjk5ZGJcIn0iLCJleHAiOjE2NzkwNDk2MzksImlhdCI6MTY3OTA0MjM3OX0.H8PXQbvfTzlRPpTZFSKfkQPPAnxN5vYni61NcWsaR_fjj5f2o9r7YiZwG6yBXRzFTw9-rGhqk6owZtstQYDmP1FPnBLuWV0y8otv3wyoLa4MTGDzHxFMokqX9VvB0OWh3lXiJdcOZCLzU58mHSzUclku-zWG3CbYMnSU7mvFVU4")
                 .build();
         BaseRequestEntity request = BaseRequestEntity.builder()
                 .aliyundriveRequestBaseHeader(headerEntity)
@@ -342,7 +347,34 @@ class HttpTest {
     }
 
     /**
-     * test
+     * 阿里云盘-测试-通过文件ID+网盘ID+新文件名重命名文件
+     * 2023-03-17 测试通过
+     */
+    @Test
+    void testUpdateFileInfoById(){
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(),"zZVfG1NuVVkCAXrpXIwdeAyE");
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),"2717817a79b5c751c7f7c1546bba3b7352ee2a458e041a070e4e84dcbceff1af7216d9a6d7747955c510a2bbf83ca5b1084288c08045dcad2facaffd37c8954100");
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_NONCE_KEY.getEnumsStringValue(),0);
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiY2UyMTJjZTIzZGM2NDJlOWIzNzQ1NDcxZTAzYjk5ZGJcIn0iLCJleHAiOjE2NzkwNDk2MzksImlhdCI6MTY3OTA0MjM3OX0.H8PXQbvfTzlRPpTZFSKfkQPPAnxN5vYni61NcWsaR_fjj5f2o9r7YiZwG6yBXRzFTw9-rGhqk6owZtstQYDmP1FPnBLuWV0y8otv3wyoLa4MTGDzHxFMokqX9VvB0OWh3lXiJdcOZCLzU58mHSzUclku-zWG3CbYMnSU7mvFVU4")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .checkNameMode("false")
+                .fileId("63f81ad1c953d94e335048178a4dfb209538b7dd")
+                .driveId("735543902")
+                .name("Java编程思想-test版本.pdf")
+                .build();
+        IAliyunDriveFileService fileService = new AliyunDriveFileServiceImpl();
+        FileInfoEntity fileInfoEntity = fileService.updateFileNameById(request).getData();
+        log.info(fileInfoEntity.toString());
+    }
+
+    /**
+     * 阿里云盘-test-测试
+     * 测试向阿里云服务端Session注册deviceId与Signature值
+     * 2023-03-17 测试通过
      * deviceIdStr：04f0b6f06e9b7cd0ac8cc73b
      * signatureStr：1b8e931a9b8d240a7e07a679a1159b579282f26983a1ff025d14ee9fef453f1e6138163959a145ca1d239ea3e8b18b910a53aa426333497b78a670b62489f9d101
      */
@@ -362,6 +394,8 @@ class HttpTest {
         log.info("deviceIdStr：{}",deviceIdStr);
         log.info("signatureStr：{}",signatureStr);
     }
+
+
 
 
     @Test

@@ -115,12 +115,36 @@ public class AliyunDriveFileServiceImpl implements IAliyunDriveFileService {
 
     /**
      * 根据文件id更新文件信息
-     *
-     * @param fileId 传入一个文件id
+     * 文件重命名API
+     * @param baseRequest 传入一个文件通用请求
      * @return 返回更新之后的文件结果
      */
     @Override
-    public BaseResponseEntity<FileInfoEntity> updateFileInfoById(String fileId) {
-        return null;
+    public BaseResponseEntity<FileInfoEntity> updateFileNameById(BaseRequestEntity baseRequest) {
+        // 准备请求参数
+        Map<String,Object> requestParam = new LinkedHashMap<>();
+        requestParam.put("check_name_mode",baseRequest.getCheckNameMode());
+        requestParam.put("file_id",baseRequest.getFileId());
+        requestParam.put("drive_id",baseRequest.getDriveId());
+        requestParam.put("name",baseRequest.getName());
+        // 发起文件更新请求，根据文件id更新文件信息
+        String resp = HTTP_CLIENT.doNormalFilePost((String)
+                        AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FILE_UPDATE_BY_ID_KEY.getEnumsStringValue()),
+                // token类型
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
+                // token
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(),
+                // 请求参数
+                requestParam);
+        // 解析响应
+        if (!resp.isEmpty() && !resp.isBlank()) {
+            FileInfoEntity madeResp = GSON.fromJson(resp, FileInfoEntity.class);
+            if (Objects.nonNull(madeResp)) {
+                log.info("根据文件id以及网盘id以及新文件名修改文件信息成功~");
+                return BaseResponseEntity.success(madeResp);
+            }
+        }
+        // 抛出不符合预期的异常
+        throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_JSON_PARSER);
     }
 }
