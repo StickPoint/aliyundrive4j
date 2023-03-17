@@ -22,9 +22,33 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_COMMON_NUMBER_33(33),
     /**
+     * 阿里云盘-通用数字-10000
+     */
+    ALIYUN_DRIVE_COMMON_NUMBER_10000(10000),
+    /**
      * 阿里云盘-通用数字-32
      */
     ALIYUN_DRIVE_COMMON_NUMBER_32(32),
+    /**
+     * 阿里云盘-通用数字-6
+     */
+    ALIYUN_DRIVE_COMMON_NUMBER_6(6),
+    /**
+     * 阿里云盘-通用数字-3
+     */
+    ALIYUN_DRIVE_COMMON_NUMBER_3(3),
+    /**
+     * 阿里云盘-通用数字-4
+     */
+    ALIYUN_DRIVE_COMMON_NUMBER_4(4),
+    /**
+     * 阿里云盘-通用数字-16
+     */
+    ALIYUN_DRIVE_COMMON_NUMBER_16(16),
+    /**
+     * 阿里云盘-通用数字-8
+     */
+    ALIYUN_DRIVE_COMMON_NUMBER_8(8),
     /**
      * HTTP状态码 202 创建成功
      */
@@ -54,6 +78,22 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_RESP_JSON_KEY_CODE_CONTENT("codeContent"),
     /**
+     * 阿里云盘-系统配置-key-signature
+     */
+    ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE("aliyundrive4j-signature"),
+    /**
+     * 阿里云盘-系统配置-key-deviceId
+     */
+    ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID("aliyundrive4j-deviceId"),
+    /**
+     * 阿里云盘-系统配置-key-appId
+     */
+    ALIYUN_DRIVE_INFO_ENUMS_APP_ID("aliyundrive4j-appId"),
+    /**
+     * 阿里云盘-系统配置-key-userId
+     */
+    ALIYUN_DRIVE_INFO_ENUMS_USER_ID("aliyundrive4j-userId"),
+    /**
      * 阿里云盘-系统响应-JSON对象-Key-ck
      */
     ALIYUN_DRIVE_RESP_JSON_KEY_CK("ck"),
@@ -68,6 +108,7 @@ public enum AliyunDriveInfoEnums {
     /**
      * 阿里云盘-系统响应-JSON对象-Key-qrCodeStatus
      */
+
     ALIYUN_DRIVE_RESP_JSON_KEY_QR_CODE_STATUS("qrCodeStatus"),
     /**
      * 阿里云盘-参数请求类型-json
@@ -78,20 +119,85 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_RESP_JSON_KEY_DATA("data"),
     /**
-     * 阿里云盘-Http请求的header参数名称:contentType
-     */
-    ALIYUN_DRIVE_REQUEST_HEADER_NAME_CONTENT_TYPE("content-type"),
-    /**
      * 阿里云盘-请求头代理-user-agent
      */
-    ALIYUN_DRIVE_REQUEST_USER_AGENT("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36 Edg/90.0.818.66"),
+    ALIYUN_DRIVE_HTTP_HEADER_VALUE_USER_AGENT("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41"),
+    /**
+     * 阿里云盘-请求头-key-authorization
+     */
+    ALIYUN_DRIVE_HTTP_HEADER_KEY_AUTHORIZATION("authorization"),
+    /**
+     * 阿里云盘-请求头-key-origin
+     */
+    ALIYUN_DRIVE_HTTP_HEADER_KEY_ORIGIN ( "origin"),
+    /**
+     * 阿里云盘-请求头-key-User-Agent
+     */
+    ALIYUN_DRIVE_HTTP_HEADER_KEY_USER_AGENT ( "User-Agent"),
+    /**
+     * 阿里云盘-请求头-key-Content-Type
+     */
+    ALIYUN_DRIVE_HTTP_HEADER_KEY_CONTENT_TYPE ( "Content-Type"),
+    /**
+     * 阿里云盘-请求头-key-referer
+     */
+    ALIYUN_DRIVE_HTTP_HEADER_KEY_REFER ( "referer"),
+    /**
+     * 阿里云盘-请求头-key-accept
+     */
+    ALIYUN_DRIVE_HTTP_HEADER_KEY_ACCEPT ( "accept"),
+    /**
+     * 阿里云盘-请求头-key-cookie
+     */
+    ALIYUN_DRIVE_HTTP_HEADER_KEY_COOKIE ( "cookie"),
+    /**
+     * 阿里云盘-请求头-key-json
+     */
+    ALIYUN_DRIVE_OK_HTTPS_BODY_TYPE_JSON ( "json"),
+    /**
+     * 阿里云盘-请求头-key-x-device-id
+     */
+    ALIYUN_DRIVE_HTTP_HEADER_KEY_X_DEVICE_ID ( "x-device-id"),
+    /**
+     * 阿里云盘-请求头-key-x-signature
+     */
+    ALIYUN_DRIVE_HTTP_HEADER_KEY_SIGNATURE ( "x-signature"),
+    /**
+     * 阿里云盘-请求头-key-x-canary
+     */
+    ALIYUN_DRIVE_HTTP_HEADER_KEY_X_CANARY ( "x-canary"),
+    /**
+     * 阿里云盘-请求头-key-deviceName
+     */
+    ALIYUN_DRIVE_REQUEST_KEY_DEVICE_NAME ( "deviceName"),
+    /**
+     * 阿里云盘-请求头-value-deviceName
+     */
+    ALIYUN_DRIVE_REQUEST_VALUE_DEVICE_NAME ( "Edge浏览器"),
+    /**
+     * 阿里云盘-请求头-key-modelName
+     */
+    ALIYUN_DRIVE_REQUEST_KEY_MODEL_NAME ( "modelName"),
+    /**
+     * 阿里云盘-请求头-value-modelName
+     */
+    ALIYUN_DRIVE_REQUEST_VALUE_MODEL_NAME ( "Windows网页版"),
+    /**
+     * 阿里云盘-请求头-key-pubKey
+     */
+    ALIYUN_DRIVE_REQUEST_KEY_PUB_KEY ("pubKey"),
     /**
      * 阿里云盘-Http请求的header参数值：json
      */
-    ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON("application/json; charset=UTF-8"),
+    ALIYUN_DRIVE_REQUEST_HEADER_VALUE_JSON("application/json; charset(UTF-8"),
+    /**
+     * 阿里云盘-Http请求的header参数值：x-canary
+     */
+    ALIYUN_DRIVE_REQUEST_HEADER_VALUE_X_CANARY("client=web,app=adrive,version=v3.17.0"),
     /**
      * 阿里云盘-扫码登录-二维码状态-正常
      */
+
     ALIYUN_DRIVE_LOGIN_QR_CODE_STATUS_NEW("NEW"),
     /**
      * 阿里云登录结果
@@ -100,6 +206,7 @@ public enum AliyunDriveInfoEnums {
     /**
      * 阿里云 扫码登录-二维码状态-已过期
      */
+
     ALIYUN_DRIVE_LOGIN_QR_CODE_STATUS_EXPIRED("qrCodeStatus"),
     /**
      * 阿里云盘系统配置-token刷新-key
@@ -150,9 +257,17 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_SYS_PROPERTY_CREATE_SESSION_KEY("create_new_session"),
     /**
+     * 重新创建session
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_RENEW_SESSION_KEY("renew_new_session"),
+    /**
      * 阿里云盘主机域名
      */
     ALIYUN_DRIVE_SYS_PROPERTY_HOST_KEY("host"),
+    /**
+     * 阿里云盘一次性随机数据
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_NONCE_KEY("nonce"),
     /**
      * 阿里云Http请求日志信息-第001条日志模板
      */

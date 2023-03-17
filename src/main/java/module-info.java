@@ -1,4 +1,4 @@
-open module io.github.aliyundrive4j {
+module io.github.aliyundrive4j {
     requires org.slf4j;
     requires ch.qos.logback.core;
     requires ch.qos.logback.classic;
