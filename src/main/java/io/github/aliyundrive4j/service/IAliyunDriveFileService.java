@@ -48,10 +48,10 @@ public interface IAliyunDriveFileService {
 
     /**
      * 根据文件id更新文件信息
-     * @param fileId 传入一个文件id
+     * @param baseRequest 传入一个文件id
      * @return 返回更新之后的文件结果
      */
-    BaseResponseEntity<FileInfoEntity> updateFileInfoById(String fileId);
+    BaseResponseEntity<FileInfoEntity> updateFileNameById(BaseRequestEntity baseRequest);
 
 
 }

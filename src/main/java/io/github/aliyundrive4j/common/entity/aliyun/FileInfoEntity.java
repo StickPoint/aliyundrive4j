@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
 import java.io.Serial;
 
 /**
@@ -57,10 +56,14 @@ public class FileInfoEntity extends BaseEntity{
 
     @SerializedName("parent_file_id")
     private String parentFileId;
-
+    /**
+     * 文件加密模式
+     */
     @SerializedName("encrypt_mode")
     private String encryptMode;
-
+    /**
+     * 创建者类型
+     */
     @SerializedName("creator_type")
     private String creatorType;
 
@@ -82,5 +85,55 @@ public class FileInfoEntity extends BaseEntity{
     @SerializedName("ex_fields_info")
     private String exFieldsInfo;
 
+    @SerializedName("content_type")
+    private String contentType;
+
+    @SerializedName("file_extension")
+    private String fileExtension;
+
+    private Long size;
+
+    @SerializedName("upload_id")
+    private String uploadId;
+
+    @SerializedName("crc64_hash")
+    private String crc64Hash;
+
+    @SerializedName("content_hash")
+    private String contentHash;
+
+    @SerializedName("content_hash_name")
+    private String contentHashName;
+    /**
+     * 下载地址
+     */
+    @SerializedName("download_url")
+    private String downloadUrl;
+    /**
+     * 直接地址
+     */
+    private String url;
+
+    /**
+     * 短连接：thumbnail
+     */
+    private String thumbnail;
+    /**
+     * 文件类别
+     */
+    private String category;
+    /**
+     * 惩罚性标志
+     */
+    @SerializedName("punish_flag")
+    private Integer punishFlag;
+    /**
+     * 修订版版本
+     */
+    @SerializedName("revision_version")
+    private Integer revisionVersion;
+    /**
+     * 违反禁令的
+     */
     private boolean trashed;
 }
