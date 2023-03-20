@@ -21,10 +21,11 @@ public interface IAliyunDriveFileService {
 
     /**
      * 根据目录名称获得文件列表
-     * @param folderName 目录名称
+     * @param baseRequest 基础请求对象
      * @return 返回一个文件列表
      */
-    BaseResponseEntity<List<FileInfoEntity>> getFileListFromFolder(String folderName);
+    BaseResponseEntity<List<FileInfoEntity>> getFileList(BaseRequestEntity baseRequest);
+
 
     /**
      * 根据文件id获得文件详细信息
