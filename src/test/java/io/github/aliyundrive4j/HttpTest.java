@@ -2,6 +2,7 @@ package io.github.aliyundrive4j;
 import io.github.aliyundrive4j.common.entity.aliyun.AliyunBaseEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.CapacityDetail;
 import io.github.aliyundrive4j.common.entity.aliyun.DriveItemEntity;
+import io.github.aliyundrive4j.common.entity.aliyun.FileDownloadInfoEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.FileInfoEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.FolderInfoEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.LoginQrcodeInfoEntity;
@@ -354,7 +355,6 @@ class HttpTest {
     void testUpdateFileInfoById(){
         AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(),"zZVfG1NuVVkCAXrpXIwdeAyE");
         AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),"2717817a79b5c751c7f7c1546bba3b7352ee2a458e041a070e4e84dcbceff1af7216d9a6d7747955c510a2bbf83ca5b1084288c08045dcad2facaffd37c8954100");
-        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_NONCE_KEY.getEnumsStringValue(),0);
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
                 .authType("Bearer ")
                 .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiY2UyMTJjZTIzZGM2NDJlOWIzNzQ1NDcxZTAzYjk5ZGJcIn0iLCJleHAiOjE2NzkwNDk2MzksImlhdCI6MTY3OTA0MjM3OX0.H8PXQbvfTzlRPpTZFSKfkQPPAnxN5vYni61NcWsaR_fjj5f2o9r7YiZwG6yBXRzFTw9-rGhqk6owZtstQYDmP1FPnBLuWV0y8otv3wyoLa4MTGDzHxFMokqX9VvB0OWh3lXiJdcOZCLzU58mHSzUclku-zWG3CbYMnSU7mvFVU4")
@@ -372,7 +372,63 @@ class HttpTest {
     }
 
     /**
+     * 测试获取阿里云盘文件下载信息
+     * 2023-03-成功
+     */
+    @Test
+    void testGetAliyunDriveFIleDownloadInfo(){
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(),"d4d62e65cfbd7bcfb48fa865");
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),"1c42d5f389434928c61cec4b78871c094562a4dcf9d19600f621e367da7fc4cd0b7cf475613ed1bc3065f708ba8e553fe4d4345983239a52dd1f7fae96b7624f01");
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiNjQ3OTFmNTViZjljNDJiODgzODkzOTE0ZTlmODAwOWNcIn0iLCJleHAiOjE2NzkyODQ2MzEsImlhdCI6MTY3OTI3NzM3MX0.arvcHPYc1DMCr3kCVL9OwEe_mBSPZ1-WraL8tGCNkSGgJ9ntAShO5tuMTo2X4p3Mp5pOiYXK0xUitx2U09m3Nf2N1kTs8vt8aaS41TQBSN7sxLJMSz1Z-_-uUwrowDNkhB6XzFNHQ9mkj6FCHLKXYbEDTQH2NeyR7g2xW_7-aU4")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .fileId("63f7041bc5825a98c3f0465dae8202e3805e2f83")
+                .driveId("735543902")
+                .build();
+        IAliyunDriveFileService fileService = new AliyunDriveFileServiceImpl();
+        FileDownloadInfoEntity downloadInfoEntity = fileService.getFileDownloadInfo(request).getData();
+        log.info(downloadInfoEntity.toString());
+    }
+
+    /**
+     * 测试获取阿里云盘文件列表信息
+     * 2023-03-成功
+     */
+    @Test
+    void testGetFileListByBaseInfo() {
+        // deviceId
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(),"d4d62e65cfbd7bcfb48fa865");
+        // signature值
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),"1b7db1031002a2483ae42420113b2689531bdad63e8a9328eae686f3c39f74e4234b62224153872a069736534e0d4f304fb08767ef2a5c13e5e2c56fd521155801");
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiNjQ3OTFmNTViZjljNDJiODgzODkzOTE0ZTlmODAwOWNcIn0iLCJleHAiOjE2NzkyODQ2MzEsImlhdCI6MTY3OTI3NzM3MX0.arvcHPYc1DMCr3kCVL9OwEe_mBSPZ1-WraL8tGCNkSGgJ9ntAShO5tuMTo2X4p3Mp5pOiYXK0xUitx2U09m3Nf2N1kTs8vt8aaS41TQBSN7sxLJMSz1Z-_-uUwrowDNkhB6XzFNHQ9mkj6FCHLKXYbEDTQH2NeyR7g2xW_7-aU4")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .all(false)
+                .driveId("735543902")
+                .fields("*")
+                .imageUrlProcess("image/resize,w_1920/format,jpeg/interlace,1")
+                .imageThumbnailProcess("image/resize,w_256/format,jpeg")
+                .limit(20)
+                .orderBy("updated_at")
+                .orderDirection("DESC")
+                .parentFileId("63f59791955ce3331c5347d9a3cdace8f6c1ec89")
+                .urlExpireSec(14400)
+                .videoThumbnailProcess("video/snapshot,t_1000,f_jpg,ar_auto,w_256")
+                .build();
+        IAliyunDriveFileService fileService = new AliyunDriveFileServiceImpl();
+        List<FileInfoEntity> fileInfoEntityList = fileService.getFileList(request).getData();
+        fileInfoEntityList.forEach(item-> log.info(item.toString()));
+    }
+
+    /**
      * 阿里云盘-test-测试
+     * current：4
      * 测试向阿里云服务端Session注册deviceId与Signature值
      * 2023-03-17 测试通过
      * deviceIdStr：04f0b6f06e9b7cd0ac8cc73b
@@ -382,9 +438,11 @@ class HttpTest {
     void testCreateNewSessionWithAliyunDrive(){
         AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_APP_ID.getEnumsStringValue(),"25dzX3vbYqktVxyX");
         AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_USER_ID.getEnumsStringValue(),"2343026f11034d4f9c85a8f40930f0bb");
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(), "d4d62e65cfbd7bcfb48fa865");
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_NONCE_KEY.getEnumsStringValue(), 4);
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
                 .authType("Bearer ")
-                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiY2UyMTJjZTIzZGM2NDJlOWIzNzQ1NDcxZTAzYjk5ZGJcIn0iLCJleHAiOjE2NzkwNDk2MzksImlhdCI6MTY3OTA0MjM3OX0.H8PXQbvfTzlRPpTZFSKfkQPPAnxN5vYni61NcWsaR_fjj5f2o9r7YiZwG6yBXRzFTw9-rGhqk6owZtstQYDmP1FPnBLuWV0y8otv3wyoLa4MTGDzHxFMokqX9VvB0OWh3lXiJdcOZCLzU58mHSzUclku-zWG3CbYMnSU7mvFVU4")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiNjQ3OTFmNTViZjljNDJiODgzODkzOTE0ZTlmODAwOWNcIn0iLCJleHAiOjE2NzkyODQ2MzEsImlhdCI6MTY3OTI3NzM3MX0.arvcHPYc1DMCr3kCVL9OwEe_mBSPZ1-WraL8tGCNkSGgJ9ntAShO5tuMTo2X4p3Mp5pOiYXK0xUitx2U09m3Nf2N1kTs8vt8aaS41TQBSN7sxLJMSz1Z-_-uUwrowDNkhB6XzFNHQ9mkj6FCHLKXYbEDTQH2NeyR7g2xW_7-aU4")
                 .build();
         AliyunDriveHttpUtils instance = AliyunDriveHttpUtils.getInstance();
         boolean createSessionResult = instance.createNewSessionOrRenewSessionPost(headerEntity.getAuthType(), headerEntity.getAuthToken());
@@ -394,9 +452,6 @@ class HttpTest {
         log.info("deviceIdStr：{}",deviceIdStr);
         log.info("signatureStr：{}",signatureStr);
     }
-
-
-
 
     @Test
     void testUuid(){

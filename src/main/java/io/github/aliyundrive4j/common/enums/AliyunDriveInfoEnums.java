@@ -255,7 +255,15 @@ public enum AliyunDriveInfoEnums {
     /**
      * 阿里云盘系统配置-file-updateInfoById-key
      */
+    ALIYUN_DRIVE_SYS_PROPERTY_FILE_LIST_GET_KEY("file_list_get"),
+    /**
+     * 阿里云盘系统配置-file-updateInfoById-key
+     */
     ALIYUN_DRIVE_SYS_PROPERTY_FILE_UPDATE_BY_ID_KEY("file_update_info_by_id"),
+    /**
+     * 阿里云盘系统配置-file-updateInfoById-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_FILE_DOWNLOAD_INFO_GET_KEY("file_download_info_get"),
     /**
      * 创建新的Session
      */
