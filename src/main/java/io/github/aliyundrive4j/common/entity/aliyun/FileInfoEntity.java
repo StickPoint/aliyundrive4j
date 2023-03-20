@@ -136,4 +136,6 @@ public class FileInfoEntity extends BaseEntity{
      * 违反禁令的
      */
     private boolean trashed;
+
+    private String expiration;
 }

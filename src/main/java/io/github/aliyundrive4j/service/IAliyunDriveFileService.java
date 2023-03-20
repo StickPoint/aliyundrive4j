@@ -1,5 +1,6 @@
 package io.github.aliyundrive4j.service;
 
+import io.github.aliyundrive4j.common.entity.aliyun.FileDownloadInfoEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.FileInfoEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
@@ -52,6 +53,13 @@ public interface IAliyunDriveFileService {
      * @return 返回更新之后的文件结果
      */
     BaseResponseEntity<FileInfoEntity> updateFileNameById(BaseRequestEntity baseRequest);
+
+    /**
+     * 获取文件下载信息
+     * @param baseRequest 传入一个获取文件下载请求
+     * @return 返回文件下载请求信息 包含请求方式，请求方法，请求地址，请求参数，请求路径等等
+     */
+    BaseResponseEntity<FileDownloadInfoEntity> getFileDownloadInfo(BaseRequestEntity baseRequest);
 
 
 }

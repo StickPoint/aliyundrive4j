@@ -87,7 +87,7 @@ public class AliyunSecurityUtils {
      * 续租与
      * @return 返回一个一次性数据
      */
-    public static int generateNonce(){
+    public static int getCurrentNonce(){
         // 首先看看系统缓存里面是不是有
         Integer nonce = (Integer) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_NONCE_KEY.getEnumsStringValue());
         // 如果存在 就看看是不是原始数据

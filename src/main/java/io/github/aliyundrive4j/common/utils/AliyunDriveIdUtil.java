@@ -287,7 +287,7 @@ public class AliyunDriveIdUtil {
      * 获取系统deviceId
      * @return 返回一个deviceId
      */
-    public static String getDeviceId(){
+    public static String getCurrentDeviceId(){
         // 首先看看系统表中有没有deviceId
         String deviceId = (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue());
         // 如果没有的话

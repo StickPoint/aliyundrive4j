@@ -407,12 +407,13 @@ public class AliyunDriveHttpUtils {
     public boolean createNewSessionOrRenewSessionPost(String tokenType, String token) {
         // 首先需要获得阿里云盘公钥 这是创建新的连接，所以需要怎么的呢，需要数据都是新生成的 创建新的session连接之前，
         String publicKeyHexStr = AliyunSecurityUtils.getPublicKeyHexStr();
-        log.info("公钥：{}",publicKeyHexStr);
-        // 其次生成deviceId
-        String deviceId = AliyunDriveIdUtil.getDeviceId();
+        log.info("最终的公钥：{}",publicKeyHexStr);
+        // 其次获取或者生成deviceId
+        String deviceId = AliyunDriveIdUtil.getCurrentDeviceId();
+        log.info("最终的deviceId：{}",deviceId);
         // 然后获取nonce 在第一次注册的时候，是 0 createSession的时候是0 续租的时候是 nonce_now + 1
-        int nonce = AliyunSecurityUtils.generateNonce();
-        log.info("nonce：{}", nonce);
+        int nonce = AliyunSecurityUtils.getCurrentNonce();
+        log.info("最终的nonce：{}", nonce);
         // 最后生成signature十六进制字符串数据
         String signatureHexStr = AliyunSecurityUtils.getSignatureHexStr(
                 (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_APP_ID.getEnumsStringValue()),

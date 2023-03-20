@@ -1,6 +1,7 @@
 package io.github.aliyundrive4j.service.impl;
 
 import com.google.gson.Gson;
+import io.github.aliyundrive4j.common.entity.aliyun.FileDownloadInfoEntity;
 import io.github.aliyundrive4j.common.entity.aliyun.FileInfoEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseRequestEntity;
 import io.github.aliyundrive4j.common.entity.base.BaseResponseEntity;
@@ -71,8 +72,9 @@ public class AliyunDriveFileServiceImpl implements IAliyunDriveFileService {
         paramsMap.put("drive_id",baseRequest.getDriveId());
         paramsMap.put("file_id",baseRequest.getFileId());
         // 发起文件查询请求，插叙单个文件详细信息
-        String resp = HTTP_CLIENT.doNormalFilePost((String)
-                        AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FILE_GET_BY_ID_KEY.getEnumsStringValue()),
+        String resp = HTTP_CLIENT.doNormalFilePost(
+                // 文件详细信息请求地址
+                (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FILE_GET_BY_ID_KEY.getEnumsStringValue()),
                 // token类型
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 // token
@@ -128,8 +130,9 @@ public class AliyunDriveFileServiceImpl implements IAliyunDriveFileService {
         requestParam.put("drive_id",baseRequest.getDriveId());
         requestParam.put("name",baseRequest.getName());
         // 发起文件更新请求，根据文件id更新文件信息
-        String resp = HTTP_CLIENT.doNormalFilePost((String)
-                        AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FILE_UPDATE_BY_ID_KEY.getEnumsStringValue()),
+        String resp = HTTP_CLIENT.doNormalFilePost(
+                // 根据文件id更新文件名称
+                (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FILE_UPDATE_BY_ID_KEY.getEnumsStringValue()),
                 // token类型
                 baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
                 // token
@@ -142,6 +145,40 @@ public class AliyunDriveFileServiceImpl implements IAliyunDriveFileService {
             if (Objects.nonNull(madeResp)) {
                 log.info("根据文件id以及网盘id以及新文件名修改文件信息成功~");
                 return BaseResponseEntity.success(madeResp);
+            }
+        }
+        // 抛出不符合预期的异常
+        throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_JSON_PARSER);
+    }
+
+    /**
+     * 获取文件下载信息
+     *
+     * @param baseRequest 传入一个获取文件下载请求
+     * @return 返回文件下载请求信息 包含请求方式，请求方法，请求地址，请求参数，请求路径等等
+     */
+    @Override
+    public BaseResponseEntity<FileDownloadInfoEntity> getFileDownloadInfo(BaseRequestEntity baseRequest) {
+        // 准备参数
+        Map<String,Object> paramsMap = new LinkedHashMap<>();
+        paramsMap.put("drive_id",baseRequest.getDriveId());
+        paramsMap.put("file_id",baseRequest.getFileId());
+        // 发起文件查询请求，插叙单个文件详细信息
+        String resp = HTTP_CLIENT.doNormalFilePost(
+                // 获取文件下载信息的请求地址
+                (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FILE_DOWNLOAD_INFO_GET_KEY.getEnumsStringValue()),
+                // token类型
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
+                // token
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(),
+                // 请求参数
+                paramsMap);
+        // 解析响应
+        if (!resp.isEmpty() && !resp.isBlank()) {
+            FileDownloadInfoEntity resultEntity = GSON.fromJson(resp, FileDownloadInfoEntity.class);
+            if (Objects.nonNull(resultEntity)) {
+                log.info("根据文件id以及网盘id查询文件信息成功~");
+                return BaseResponseEntity.success(resultEntity);
             }
         }
         // 抛出不符合预期的异常
