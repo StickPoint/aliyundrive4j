@@ -355,13 +355,13 @@ public class AliyunDriveHttpUtils {
      * @return 返回一个相应结果
      */
     @SuppressWarnings("unused")
-    public String doDeletePost(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
+    public String doDirDeletePost(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
         HttpResult httpResult = HTTP.async(requestUrl)
                 .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_OK_HTTPS_BODY_TYPE_JSON.getEnumsStringValue())
                 .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
                 .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_AUTHORIZATION.getEnumsStringValue(), tokenType.concat(token))
                 .post().getResult();
-        if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_DELETED_OK.getEnumsIntegerValue()) {
+        if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_FOLDER_DELETED_OK.getEnumsIntegerValue()) {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常
@@ -391,6 +391,35 @@ public class AliyunDriveHttpUtils {
                         (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue()))
                 .post().getResult();
         if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_OK.getEnumsIntegerValue()) {
+            return httpResult.getBody().toString();
+        }
+        // HTTP请求异常
+        log.error(httpResult.getBody().toString());
+        httpResult.close();
+        return AliyunDriveStringUtils.emptyString();
+    }
+
+    /**
+     * 带有Auth认证的文件删除专用请求
+     * 2023-02-24 阿里云修改了文件请求的API请求方式
+     * @param requestUrl 请求地址
+     * @param tokenType token类型
+     * @param token token内容
+     * @param paramBody 参数内容
+     * @return 返回一个相应结果
+     */
+    public String doFileDeletePost(String requestUrl, String tokenType, String token, Map<String,Object> paramBody){
+        HttpResult httpResult = HTTP.async(requestUrl)
+                .bodyType(AliyunDriveInfoEnums.ALIYUN_DRIVE_OK_HTTPS_BODY_TYPE_JSON.getEnumsStringValue())
+                .addBodyPara(Optional.ofNullable(paramBody).orElse(Collections.emptyMap()))
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_AUTHORIZATION.getEnumsStringValue(),
+                        tokenType.concat(token))
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_X_DEVICE_ID.getEnumsStringValue(),
+                        (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue()))
+                .addHeader(AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_HEADER_KEY_SIGNATURE.getEnumsStringValue(),
+                        (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue()))
+                .post().getResult();
+        if (httpResult.getStatus()== AliyunDriveInfoEnums.ALIYUN_DRIVE_HTTP_STATUS_FILE_DELETED_OK.getEnumsIntegerValue()) {
             return httpResult.getBody().toString();
         }
         // HTTP请求异常

@@ -28,7 +28,7 @@ public interface IAliyunDriveFolderService {
      * @param baseRequest 基础请求参数
      * @return 返回一个删除文件夹的响应
      */
-    BaseResponseEntity<FolderInfoEntity> deleteFolder(BaseRequestEntity baseRequest);
+    BaseResponseEntity<Boolean> deleteFolder(BaseRequestEntity baseRequest);
 
     /**
      * 修改文件夹

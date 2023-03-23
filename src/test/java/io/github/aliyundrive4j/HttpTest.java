@@ -311,18 +311,20 @@ class HttpTest {
      */
     @Test
     void testDeleteDir(){
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(),"zZVfG1NuVVkCAXrpXIwdeAyE");
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),"54f24356f5cb5a87ddc3a845a8dc5e2b09c6afddf8a735cfffe28e1aee8db70f2926c561df40a2e15feeb5a2c89f9d2559407a9e3f7e2765ae00ff561128aa4300");
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
                 .authType("Bearer ")
-                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiYjY1YTc4MzNmM2U0NDk2YmIzYTFhZDc3MWIzNzk2NTFcIn0iLCJleHAiOjE2NzcyMTExMDcsImlhdCI6MTY3NzIwMzg0N30.UdpQU_3PM0LNGvAdBvTQpXZwN-AzXt4ti1ApR71RnD3Uyqmg6aAKFx37GqBZD13iLSqQ8T422pb959rSXFK_ykUUtMAYI2swT5HI0fT6XabHgyMPLRcpmaMHdB4-w1Ky5W6f5WTfk4mfU892Zo5cugy3YbeWqOZmp_vHlpme1GM")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiNGJjYTAzN2VjNWE4NGZiMTgzNGZmZTEwNGRlNmEzZWJcIn0iLCJleHAiOjE2Nzk1NjMwMjcsImlhdCI6MTY3OTU1NTc2N30.EpbWFyZoBRiePNQILCtv1B3fPoTXvkDdo6Wx_ZHjWX3Rm_4X5UtJfK0YWv0c26fzEWws9cKvSEFmYx9knuac82Hjk9UZZolzlB-qIpxV9QfrCHjotuDcnvrPaGn9HXUznJMzvvch404P9Q9eXVWRBGjdICfXB1YuBLEXKU2kZSY")
                 .build();
         BaseRequestEntity request = BaseRequestEntity.builder()
                 .aliyundriveRequestBaseHeader(headerEntity)
                 .driveId("735543902")
-                .fileId("63f4a09025d821ed3def435bab8f5738521393a9")
+                .fileId("641c0198a7eedcb79ac24e7294ed7aadffa0588a")
                 .build();
         IAliyunDriveFolderService folderService = new AliyunDriveFolderServiceImpl();
-        FolderInfoEntity folderMadeResp = folderService.deleteFolder(request).getData();
-        log.info(folderMadeResp.toString());
+        boolean deleteResult = folderService.deleteFolder(request).getData();
+        log.info("deleteFolder："+ deleteResult);
     }
 
     /**
@@ -352,7 +354,7 @@ class HttpTest {
      * 2023-03-17 测试通过
      */
     @Test
-    void testUpdateFileInfoById(){
+    void testUpdateFileInfoById() {
         AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(),"zZVfG1NuVVkCAXrpXIwdeAyE");
         AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),"2717817a79b5c751c7f7c1546bba3b7352ee2a458e041a070e4e84dcbceff1af7216d9a6d7747955c510a2bbf83ca5b1084288c08045dcad2facaffd37c8954100");
         BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
@@ -425,6 +427,29 @@ class HttpTest {
         List<FileInfoEntity> fileInfoEntityList = fileService.getFileList(request).getData();
         fileInfoEntityList.forEach(item-> log.info(item.toString()));
     }
+
+    /**
+     * 测试根据网盘id与网盘文件id删除文件
+     * 2023-03-23 测试通过，接口可用
+     */
+    @Test
+    void testDeleteFileByFileIdAndDriveId() {
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_X_DEVICE_ID.getEnumsStringValue(),"zZVfG1NuVVkCAXrpXIwdeAyE");
+        AliyunDrivePropertyUtils.put(AliyunDriveInfoEnums.ALIYUN_DRIVE_INFO_ENUMS_SIGNATURE.getEnumsStringValue(),"45235820eff2a71698b3f37cfe7414fdc1b47a57c20845e38679e29f5d1de1fa4be4a45fc9200687368e0b4f750d47d7b3c0324e89a12c3cc12c93dcea1ba94b01");
+        BaseHeaderEntity headerEntity = BaseHeaderEntity.builder()
+                .authType("Bearer ")
+                .authToken("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMzQzMDI2ZjExMDM0ZDRmOWM4NWE4ZjQwOTMwZjBiYiIsImN1c3RvbUpzb24iOiJ7XCJjbGllbnRJZFwiOlwiMjVkelgzdmJZcWt0Vnh5WFwiLFwiZG9tYWluSWRcIjpcImJqMjlcIixcInNjb3BlXCI6W1wiRFJJVkUuQUxMXCIsXCJTSEFSRS5BTExcIixcIkZJTEUuQUxMXCIsXCJVU0VSLkFMTFwiLFwiVklFVy5BTExcIixcIlNUT1JBR0UuQUxMXCIsXCJTVE9SQUdFRklMRS5MSVNUXCIsXCJCQVRDSFwiLFwiT0FVVEguQUxMXCIsXCJJTUFHRS5BTExcIixcIklOVklURS5BTExcIixcIkFDQ09VTlQuQUxMXCIsXCJTWU5DTUFQUElORy5MSVNUXCIsXCJTWU5DTUFQUElORy5ERUxFVEVcIl0sXCJyb2xlXCI6XCJ1c2VyXCIsXCJyZWZcIjpcImh0dHBzOi8vd3d3LmFsaXl1bmRyaXZlLmNvbS9cIixcImRldmljZV9pZFwiOlwiNGJjYTAzN2VjNWE4NGZiMTgzNGZmZTEwNGRlNmEzZWJcIn0iLCJleHAiOjE2Nzk1NjMwMjcsImlhdCI6MTY3OTU1NTc2N30.EpbWFyZoBRiePNQILCtv1B3fPoTXvkDdo6Wx_ZHjWX3Rm_4X5UtJfK0YWv0c26fzEWws9cKvSEFmYx9knuac82Hjk9UZZolzlB-qIpxV9QfrCHjotuDcnvrPaGn9HXUznJMzvvch404P9Q9eXVWRBGjdICfXB1YuBLEXKU2kZSY")
+                .build();
+        BaseRequestEntity request = BaseRequestEntity.builder()
+                .aliyundriveRequestBaseHeader(headerEntity)
+                .fileId("641c04a2d86c9f2c9427476a835c2dc422e6f657")
+                .driveId("735543902")
+                .build();
+        IAliyunDriveFileService fileService = new AliyunDriveFileServiceImpl();
+        Boolean deleteFileResult = fileService.deleteFileById(request).getData();
+        log.info("删除文件结果："+deleteFileResult);
+    }
+
 
     /**
      * 阿里云盘-test-测试
