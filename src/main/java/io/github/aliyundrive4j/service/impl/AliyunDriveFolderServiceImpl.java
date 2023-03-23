@@ -76,27 +76,34 @@ public class AliyunDriveFolderServiceImpl implements IAliyunDriveFolderService {
      * @return 返回一个删除文件夹的响应
      */
     @Override
-    public BaseResponseEntity<FolderInfoEntity> deleteFolder(BaseRequestEntity baseRequest) {
-        // 准备参数
-        Map<String,Object> paramsMap = new LinkedHashMap<>();
-        paramsMap.put("drive_id",baseRequest.getDriveId());
-        paramsMap.put("file_id",baseRequest.getFileId());
-        String resp = HTTP_CLIENT.doDeletePost((String) AliyunDrivePropertyUtils.get(
-                        AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FOLDER_DELETED_KEY.getEnumsStringValue()),
-                baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
-                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);
-        if (!resp.isEmpty() && !resp.isBlank()) {
-            FolderInfoEntity madeResp = GSON.fromJson(resp, FolderInfoEntity.class);
-            if (Objects.nonNull(madeResp)) {
-                log.info("删除文件夹成功~");
-                return BaseResponseEntity.success(madeResp);
+    public BaseResponseEntity<Boolean> deleteFolder(BaseRequestEntity baseRequest) {
+        try {
+            // 准备参数
+            Map<String,Object> paramsMap = new LinkedHashMap<>();
+            paramsMap.put("drive_id",baseRequest.getDriveId());
+            paramsMap.put("file_id",baseRequest.getFileId());
+            String resp = HTTP_CLIENT.doDirDeletePost((String) AliyunDrivePropertyUtils.get(
+                            AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FOLDER_DELETED_KEY.getEnumsStringValue()),
+                    baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
+                    baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(), paramsMap);
+            if (!resp.isEmpty() && !resp.isBlank()) {
+                FolderInfoEntity madeResp = GSON.fromJson(resp, FolderInfoEntity.class);
+                if (Objects.nonNull(madeResp)) {
+                    log.info("删除文件夹成功~");
+                    return BaseResponseEntity.success(true);
+                }
             }
+            return BaseResponseEntity.success(true);
+            // 删除文件无任何响应，只要此过程中没有抛出任何异常，那么执行就算成功
+        } catch (AliyunDriveException e) {
+            log.error("文件删除出现异常问题！{}",e.getCause().getMessage());
         }
+
         throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_JSON_PARSER);
     }
 
     /**
-     * 修改文件夹
+     * 修改文件夹·
      *
      * @param baseRequest 基础请求参数
      * @return 返回一个修改文件夹的响应

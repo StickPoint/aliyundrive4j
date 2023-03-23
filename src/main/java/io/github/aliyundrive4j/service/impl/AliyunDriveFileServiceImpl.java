@@ -144,12 +144,33 @@ public class AliyunDriveFileServiceImpl implements IAliyunDriveFileService {
     /**
      * 根据文件id删除文件
      *
-     * @param fileId 传入一个文件id
+     * @param baseRequest 实际上需要的是：fileId + driveId 传入一个文件id
      * @return 返回一个删除结果
      */
     @Override
-    public BaseResponseEntity<Boolean> deleteFileById(String fileId) {
-        return null;
+    public BaseResponseEntity<Boolean> deleteFileById(BaseRequestEntity baseRequest) {
+        // 准备参数
+        Map<String,Object> paramsMap = new LinkedHashMap<>();
+        paramsMap.put("drive_id",baseRequest.getDriveId());
+        paramsMap.put("file_id",baseRequest.getFileId());
+        // 发起文件查询请求，插叙单个文件详细信息
+        String resp = HTTP_CLIENT.doFileDeletePost(
+                // 删除文件的请求地址
+                (String) AliyunDrivePropertyUtils.get(AliyunDriveInfoEnums.ALIYUN_DRIVE_SYS_PROPERTY_FILE_DELETE_BY_ID_KEY.getEnumsStringValue()),
+                // token类型
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthType(),
+                // token
+                baseRequest.getAliyundriveRequestBaseHeader().getAuthToken(),
+                // 请求参数
+                paramsMap);
+        // 解析响应 正常来说删除文件之后就是返回一个空字符串 ""
+        if (!resp.isEmpty() && !resp.isBlank()) {
+            // 抛出不符合预期的异常
+            log.error("不符合预期，数据为：{}",resp);
+            throw new AliyunDriveException(AliyunDriveCodeEnums.ERROR_JSON_PARSER);
+        }
+        log.info("删除网盘文件成功~");
+        return BaseResponseEntity.success(true);
     }
 
     /**

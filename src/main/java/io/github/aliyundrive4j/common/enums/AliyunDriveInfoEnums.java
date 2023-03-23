@@ -50,9 +50,13 @@ public enum AliyunDriveInfoEnums {
      */
     ALIYUN_DRIVE_COMMON_NUMBER_8(8),
     /**
-     * HTTP状态码 202 创建成功
+     * HTTP状态码 202 删除文件夹成功
      */
-    ALIYUN_DRIVE_HTTP_STATUS_DELETED_OK(202),
+    ALIYUN_DRIVE_HTTP_STATUS_FOLDER_DELETED_OK(202),
+    /**
+     * HTTP状态码 204 删除文件成功
+     */
+    ALIYUN_DRIVE_HTTP_STATUS_FILE_DELETED_OK(204),
     /**
      * 阿里云盘-系统配置-key-登出
      */
@@ -252,6 +256,10 @@ public enum AliyunDriveInfoEnums {
      * 阿里云盘系统配置-file-getInfoById-key
      */
     ALIYUN_DRIVE_SYS_PROPERTY_FILE_GET_BY_ID_KEY("file_get_info_by_id"),
+    /**
+     * 阿里云盘系统配置-file-delete-ById-key
+     */
+    ALIYUN_DRIVE_SYS_PROPERTY_FILE_DELETE_BY_ID_KEY("file_delete_id"),
     /**
      * 阿里云盘系统配置-file-updateInfoById-key
      */

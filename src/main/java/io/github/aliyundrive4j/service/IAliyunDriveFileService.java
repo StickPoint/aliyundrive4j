@@ -36,10 +36,10 @@ public interface IAliyunDriveFileService {
 
     /**
      * 根据文件id删除文件
-     * @param fileId 传入一个文件id
+     * @param baseRequest 实际上需要的是：fileId + driveId 传入一个文件id
      * @return 返回一个删除结果
      */
-    BaseResponseEntity<Boolean> deleteFileById(String fileId);
+    BaseResponseEntity<Boolean> deleteFileById(BaseRequestEntity baseRequest);
 
     /**
      * 创建阿里云盘文件
